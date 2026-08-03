@@ -1,1 +1,3529 @@
 
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An expanded, rigorous and visual first-principles derivation of the formulas for the sums of the first n integers, squares and cubes, with multiple proofs and exact JavaScript checks.">
+  <title>Sums and Powers of Integers — Expanded Rigorous Proofs from First Principles</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #526176;
+      --blue: #246a9d;
+      --blue-dark: #174c72;
+      --blue-soft: #e7f2fa;
+      --panel: #ffffff;
+      --page: #f3f6fa;
+      --line: #cad8e5;
+      --gold-soft: #fff6d8;
+      --green-soft: #e9f7ef;
+      --red-soft: #fff0f0;
+      --shadow: 0 10px 30px rgba(26, 55, 85, 0.10);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 1rem;
+    }
+
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      line-height: 1.72;
+    }
+
+    button, input { font: inherit; }
+
+    .hero {
+      background: linear-gradient(135deg, #d9ebf7, #eff7fc 55%, #ffffff);
+      border-bottom: 1px solid var(--line);
+      padding: 2.8rem 1.2rem 2.3rem;
+    }
+
+    .hero-inner, main, footer {
+      width: min(1120px, calc(100% - 2rem));
+      margin-inline: auto;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.4rem;
+      color: var(--blue-dark);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, h4 {
+      line-height: 1.2;
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 920px;
+      margin-bottom: 0.9rem;
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      letter-spacing: -0.035em;
+    }
+
+    h2 {
+      margin-bottom: 0.8rem;
+      font-size: clamp(1.55rem, 3vw, 2.3rem);
+      color: var(--blue-dark);
+    }
+
+    h3 {
+      margin-bottom: 0.55rem;
+      font-size: 1.3rem;
+    }
+
+    h4 {
+      margin-bottom: 0.35rem;
+      font-size: 1.08rem;
+    }
+
+    p { margin: 0.55rem 0 1rem; }
+
+    .hero-lead {
+      max-width: 900px;
+      margin: 0;
+      color: #34465b;
+      font-size: 1.08rem;
+    }
+
+    .hero-actions,
+    .toolbar,
+    .control-row,
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .hero-actions { margin-top: 1.35rem; }
+
+    .btn,
+    button {
+      border: 1px solid var(--blue);
+      border-radius: 999px;
+      background: var(--blue);
+      color: #fff;
+      padding: 0.68rem 1rem;
+      font-weight: 750;
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+
+    .btn:hover,
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(36, 106, 157, 0.22);
+    }
+
+    .btn:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    summary:focus-visible,
+    a:focus-visible {
+      outline: 3px solid rgba(36, 106, 157, 0.30);
+      outline-offset: 3px;
+    }
+
+    .btn.secondary,
+    button.secondary {
+      background: #fff;
+      color: var(--blue-dark);
+    }
+
+    a.btn { text-decoration: none; }
+
+    main { padding: 1.5rem 0 4rem; }
+
+    .contents {
+      position: sticky;
+      top: 0.5rem;
+      z-index: 5;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 1.2rem;
+      padding: 0.65rem;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 7px 20px rgba(26, 55, 85, 0.07);
+      backdrop-filter: blur(10px);
+    }
+
+    .contents a {
+      color: var(--blue-dark);
+      text-decoration: none;
+      font-weight: 750;
+      padding: 0.38rem 0.65rem;
+      border-radius: 999px;
+    }
+
+    .contents a:hover { background: var(--blue-soft); }
+
+    section.card {
+      margin: 1.25rem 0;
+      padding: clamp(1.15rem, 3vw, 2rem);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .section-kicker {
+      margin: 0 0 0.35rem;
+      color: var(--blue);
+      font-size: 0.82rem;
+      font-weight: 850;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .lead {
+      color: #3e4d60;
+      font-size: 1.03rem;
+    }
+
+    .grid-2,
+    .grid-3,
+    .formula-grid,
+    .lab-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .grid-2, .lab-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3, .formula-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .mini-card,
+    .formula-card,
+    .proof-step,
+    .worked-example,
+    .visual-card,
+    .quiz-card {
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .formula-card {
+      display: flex;
+      min-height: 190px;
+      flex-direction: column;
+      justify-content: space-between;
+      background: linear-gradient(180deg, #fff, #f8fbfd);
+    }
+
+    .formula-card .name {
+      color: var(--blue-dark);
+      font-weight: 850;
+    }
+
+    .formula-card .plain {
+      color: var(--muted);
+      font-size: 0.91rem;
+    }
+
+    .equation {
+      margin: 0.9rem 0;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      background: #f8fbfd;
+      border-left: 5px solid var(--blue);
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .equation.compact { padding: 0.65rem 0.8rem; }
+
+    math {
+      font-size: 1.18rem;
+      color: #0e1725;
+    }
+
+    .big-math math { font-size: clamp(1.15rem, 3vw, 1.55rem); }
+
+    .note,
+    .insight,
+    .warning,
+    .definition {
+      margin: 1rem 0;
+      padding: 0.9rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+    }
+
+    .definition { background: var(--blue-soft); }
+    .insight { background: var(--green-soft); }
+    .note { background: var(--gold-soft); }
+    .warning { background: var(--red-soft); }
+
+    .label {
+      display: inline-block;
+      margin-bottom: 0.22rem;
+      color: var(--blue-dark);
+      font-weight: 850;
+    }
+
+    ol.steps {
+      margin: 0;
+      padding: 0;
+      counter-reset: proof;
+      list-style: none;
+    }
+
+    ol.steps > li {
+      counter-increment: proof;
+      position: relative;
+      margin: 0 0 0.9rem;
+      padding: 1rem 1rem 1rem 3.5rem;
+      background: #fbfdff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    ol.steps > li::before {
+      content: counter(proof);
+      position: absolute;
+      left: 0.9rem;
+      top: 0.9rem;
+      display: grid;
+      width: 1.9rem;
+      height: 1.9rem;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-weight: 850;
+    }
+
+    details {
+      margin: 0.95rem 0;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    summary {
+      cursor: pointer;
+      padding: 0.9rem 1rem;
+      color: var(--blue-dark);
+      background: #f8fbfd;
+      font-weight: 850;
+    }
+
+    details[open] summary { border-bottom: 1px solid var(--line); }
+    .details-body { padding: 1rem; }
+
+    .plain-language {
+      color: #3e4d60;
+      font-size: 0.95rem;
+    }
+
+    .terms {
+      min-height: 2.4rem;
+      padding: 0.7rem;
+      overflow-wrap: anywhere;
+      border-radius: 10px;
+      background: #f7f9fc;
+      border: 1px dashed var(--line);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .result-number {
+      margin-top: 0.35rem;
+      color: var(--blue-dark);
+      font-size: 1.55rem;
+      font-weight: 900;
+    }
+
+    .check-line {
+      margin-top: 0.45rem;
+      font-size: 0.9rem;
+      font-weight: 750;
+    }
+
+    .check-line.ok { color: #17663d; }
+    .check-line.bad { color: #a22b2b; }
+
+    .control-panel {
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #f8fbfd;
+    }
+
+    .control-panel label { font-weight: 800; }
+
+    input[type="number"] {
+      width: 7rem;
+      padding: 0.55rem 0.65rem;
+      border: 1px solid #9fb4c7;
+      border-radius: 9px;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    input[type="range"] {
+      width: min(420px, 100%);
+      accent-color: var(--blue);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.7rem 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    caption {
+      margin-bottom: 0.45rem;
+      color: var(--muted);
+      text-align: left;
+      font-weight: 700;
+    }
+
+    th, td {
+      padding: 0.55rem 0.62rem;
+      border: 1px solid var(--line);
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #edf5fa;
+      color: var(--blue-dark);
+    }
+
+    .table-wrap { overflow-x: auto; }
+
+    .dot-rectangle {
+      display: grid;
+      gap: 0.28rem;
+      width: max-content;
+      max-width: 100%;
+      margin: 1rem auto;
+      padding: 0.8rem;
+      border: 2px solid #8199ad;
+      border-radius: 10px;
+      background: #fafdff;
+      overflow-x: auto;
+    }
+
+    .dot {
+      width: 0.8rem;
+      height: 0.8rem;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 0, 0, 0.18);
+    }
+
+    .dot.set-a { background: #3d89bd; }
+    .dot.set-b { background: #f2b84b; }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .swatch {
+      width: 0.9rem;
+      height: 0.9rem;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 0, 0, 0.18);
+    }
+
+    .swatch.a { background: #3d89bd; }
+    .swatch.b { background: #f2b84b; }
+
+    .cancel-demo {
+      padding: 0.8rem;
+      overflow-x: auto;
+      white-space: nowrap;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      background: #fafcff;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.07rem;
+    }
+
+    .cancelled {
+      color: #8a4f4f;
+      text-decoration: line-through;
+      text-decoration-thickness: 2px;
+    }
+
+    .survivor {
+      color: #17663d;
+      font-weight: 850;
+    }
+
+    .reveal-answer[hidden] { display: none; }
+
+    .quiz-card button { margin-top: 0.35rem; }
+
+    code.inline {
+      padding: 0.08rem 0.3rem;
+      border-radius: 5px;
+      background: #eef3f7;
+      color: #1a3550;
+    }
+
+    .small { font-size: 0.9rem; color: var(--muted); }
+    .centred { text-align: center; }
+    .spacer-top { margin-top: 1.25rem; }
+
+    footer {
+      padding: 0 0 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 820px) {
+      .grid-2,
+      .grid-3,
+      .formula-grid,
+      .lab-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .contents { position: static; }
+      section.card { border-radius: 14px; }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .hero { padding: 1rem 0; }
+      .contents,
+      .hero-actions,
+      .toolbar,
+      .control-panel button,
+      .quiz-card button { display: none !important; }
+      section.card {
+        box-shadow: none;
+        break-inside: avoid;
+      }
+      details:not([open]) > *:not(summary) { display: block; }
+      summary { list-style: none; }
+    }
+  
+
+    /* Expanded rigorous edition */
+    .rigour-banner {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.9rem;
+      align-items: start;
+      margin: 1rem 0;
+      padding: 1rem;
+      border: 2px solid #7aa6c7;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #eef7fd, #ffffff);
+    }
+
+    .rigour-banner .seal {
+      display: grid;
+      width: 3.2rem;
+      height: 3.2rem;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--blue-dark);
+      color: #fff;
+      font-size: 1.35rem;
+      font-weight: 900;
+    }
+
+    .theorem,
+    .lemma,
+    .proof-certificate {
+      margin: 1rem 0;
+      padding: 1rem;
+      border-radius: 14px;
+      border: 1px solid #9cb8cc;
+      background: #f6fbff;
+    }
+
+    .theorem { border-left: 6px solid #6f55a5; background: #f7f4ff; }
+    .lemma { border-left: 6px solid #287b61; background: #f2fbf7; }
+    .proof-certificate { border-left: 6px solid #b17a19; background: #fffaf0; }
+
+    .theorem-title,
+    .lemma-title,
+    .certificate-title {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--blue-dark);
+      font-weight: 900;
+    }
+
+    .law-grid,
+    .audit-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .law-card,
+    .audit-card {
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fbfdff;
+    }
+
+    .law-card h3,
+    .audit-card h3 { color: var(--blue-dark); }
+
+    .proof-ledger {
+      display: grid;
+      gap: 0.65rem;
+      margin: 1rem 0;
+    }
+
+    .proof-ledger-item {
+      display: grid;
+      grid-template-columns: minmax(10rem, 0.9fr) 2fr;
+      gap: 0.8rem;
+      align-items: start;
+      padding: 0.8rem;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .proof-ledger-item strong { color: var(--blue-dark); }
+
+    .why-step {
+      margin-top: 0.65rem;
+      padding: 0.75rem 0.85rem;
+      border-left: 4px solid #d7a12a;
+      border-radius: 8px;
+      background: #fff9e8;
+      color: #4f452d;
+      font-size: 0.95rem;
+    }
+
+    .visual-stage {
+      margin: 1rem 0;
+      padding: 1rem;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background:
+        linear-gradient(#f8fbfd, #f8fbfd) padding-box,
+        repeating-linear-gradient(0deg, transparent, transparent 19px, rgba(36,106,157,.055) 20px),
+        repeating-linear-gradient(90deg, transparent, transparent 19px, rgba(36,106,157,.055) 20px);
+    }
+
+    .visual-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 0.75rem 0;
+      padding: 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #f8fbfd;
+    }
+
+    .visual-controls label { font-weight: 800; }
+
+    .gnomon-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      justify-content: center;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .gnomon-card {
+      min-width: 9.5rem;
+      padding: 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      text-align: center;
+    }
+
+    .gnomon-grid {
+      display: grid;
+      width: min(12rem, 100%);
+      margin: 0 auto 0.55rem;
+      border: 2px solid #536b80;
+      background: #fff;
+    }
+
+    .gnomon-cell {
+      min-width: 0.85rem;
+      aspect-ratio: 1;
+      border: 1px solid rgba(20, 40, 60, 0.22);
+    }
+
+    .gnomon-caption {
+      margin: 0;
+      color: var(--blue-dark);
+      font-weight: 850;
+      line-height: 1.35;
+    }
+
+    .svg-stage {
+      width: min(720px, 100%);
+      margin: 1rem auto;
+      padding: 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #ffffff;
+    }
+
+    .svg-stage svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .layer-readout {
+      margin: 0.8rem 0 0;
+      padding: 0.85rem;
+      border-radius: 10px;
+      background: var(--green-soft);
+      border: 1px solid #acd2ba;
+      text-align: center;
+      font-weight: 750;
+    }
+
+    .identity-strip {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.55rem;
+      margin: 0.8rem 0;
+    }
+
+    .identity-chip {
+      padding: 0.55rem 0.7rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9rem;
+    }
+
+    .degree-table td:nth-child(n+2),
+    .degree-table th:nth-child(n+2) { background: #edf8f1; }
+
+    .pascal {
+      display: grid;
+      gap: 0.35rem;
+      justify-items: center;
+      margin: 1rem auto;
+      width: max-content;
+      max-width: 100%;
+    }
+
+    .pascal-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.35rem;
+    }
+
+    .pascal-number {
+      display: grid;
+      min-width: 2.25rem;
+      min-height: 2.25rem;
+      place-items: center;
+      padding: 0.25rem;
+      border: 1px solid #9bb2c5;
+      border-radius: 8px;
+      background: #fff;
+      font-variant-numeric: tabular-nums;
+      font-weight: 750;
+    }
+
+    .proof-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.22rem 0.5rem;
+      border-radius: 999px;
+      font-weight: 850;
+      font-size: 0.85rem;
+    }
+
+    .proof-status.pass { background: #e3f6ea; color: #17663d; }
+    .proof-status.caution { background: #fff1d2; color: #72510e; }
+
+    .formula-verdict {
+      margin-top: 0.8rem;
+      padding: 0.9rem;
+      border-radius: 12px;
+      border: 1px solid #acd2ba;
+      background: #effaf3;
+      color: #185438;
+      font-weight: 800;
+    }
+
+    .stress-output {
+      min-height: 3rem;
+      margin-top: 0.8rem;
+      padding: 0.8rem;
+      border: 1px dashed #8ba6bb;
+      border-radius: 10px;
+      background: #fbfdff;
+    }
+
+    .two-column-proof {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 1rem;
+    }
+
+    .side-proof {
+      padding: 0.9rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .assumption-list li { margin-bottom: 0.45rem; }
+
+    @media (max-width: 820px) {
+      .law-grid,
+      .audit-grid,
+      .two-column-proof { grid-template-columns: 1fr; }
+      .proof-ledger-item { grid-template-columns: 1fr; }
+      .rigour-banner { grid-template-columns: 1fr; }
+    }
+
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">Rule: sums and powers of integers</p>
+      <h1>Where the first three power-sum formulas actually come from — expanded rigorous edition</h1>
+      <p class="hero-lead">
+        This page derives, rather than merely states, the formulas for
+        <strong>one plus two plus up to n</strong>, the sum of the first <strong>n squares</strong>,
+        and the sum of the first <strong>n cubes</strong>. It now gives several independent routes:
+        visual counting proofs, exact algebraic derivations, telescoping proofs, finite-difference discovery,
+        recurrence certificates and formal induction. Every important equality is justified. No calculus is required.
+      </p>
+      <div class="hero-actions">
+        <a class="btn" href="#foundations">Start with the foundations</a>
+        <a class="btn secondary" href="#proof-toolkit">See the proof toolkit</a>
+        <a class="btn secondary" href="#laboratory">Try a value of n</a>
+        <button class="secondary" id="expandAllBtn" type="button">Open every explanation</button>
+        <button class="secondary" id="printBtn" type="button">Print or save as PDF</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <nav class="contents" aria-label="Page contents">
+      <a href="#foundations">Foundations</a>
+      <a href="#proof-toolkit">Proof toolkit</a>
+      <a href="#laboratory">Interactive check</a>
+      <a href="#first-powers">First powers</a>
+      <a href="#squares">Squares</a>
+      <a href="#cubes">Cubes</a>
+      <a href="#systematic-origin">Systematic origin</a>
+      <a href="#induction">Induction</a>
+      <a href="#big-picture">Big picture</a>
+    </nav>
+
+    <section class="card" id="foundations">
+      <p class="section-kicker">Part 0</p>
+      <h2>The foundations: what every symbol means</h2>
+      <p class="lead">
+        Before proving anything, we need to be precise about the objects we are adding.
+        Throughout the page, <strong>n is a non-negative whole number</strong>. Most examples use
+        <strong>n at least one</strong>. When n is zero, the sum contains no terms and is defined to be zero.
+      </p>
+
+      <div class="grid-2">
+        <div class="mini-card">
+          <h3>1. Sigma means repeated addition</h3>
+          <div class="equation big-math">
+            <math display="block" aria-label="the sum from k equals 1 to n of f of k equals f of 1 plus f of 2 up to f of n">
+              <mrow>
+                <munderover>
+                  <mo>∑</mo>
+                  <mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow>
+                  <mi>n</mi>
+                </munderover>
+                <mi>f</mi><mo>(</mo><mi>k</mi><mo>)</mo>
+                <mo>=</mo>
+                <mi>f</mi><mo>(</mo><mn>1</mn><mo>)</mo><mo>+</mo>
+                <mi>f</mi><mo>(</mo><mn>2</mn><mo>)</mo><mo>+</mo>
+                <mo>⋯</mo><mo>+</mo>
+                <mi>f</mi><mo>(</mo><mi>n</mi><mo>)</mo>
+              </mrow>
+            </math>
+          </div>
+          <p>
+            The letter <strong>k</strong> is a counter. It takes the values one, two, three, and so on,
+            until it reaches n. The letter itself is not important: the image uses i; this page often uses k.
+          </p>
+        </div>
+
+        <div class="mini-card">
+          <h3>2. A power is repeated multiplication</h3>
+          <div class="equation compact">
+            <math display="block" aria-label="k squared equals k times k, and k cubed equals k times k times k">
+              <mrow>
+                <msup><mi>k</mi><mn>2</mn></msup><mo>=</mo><mi>k</mi><mo>×</mo><mi>k</mi>
+                <mspace width="2em"></mspace>
+                <msup><mi>k</mi><mn>3</mn></msup><mo>=</mo><mi>k</mi><mo>×</mo><mi>k</mi><mo>×</mo><mi>k</mi>
+              </mrow>
+            </math>
+          </div>
+          <p>
+            Therefore, the sum of squares is
+            one squared plus two squared plus up to n squared, and the sum of cubes is
+            one cubed plus two cubed plus up to n cubed.
+          </p>
+        </div>
+
+        <div class="mini-card">
+          <h3>3. A partial sum is the total so far</h3>
+          <p>We give each running total a name:</p>
+          <div class="equation compact">
+            <math display="block" aria-label="S 1 of n equals the sum from k equals 1 to n of k">
+              <mrow>
+                <msub><mi>S</mi><mn>1</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo>
+                <mo>=</mo>
+                <munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mi>k</mi>
+              </mrow>
+            </math>
+          </div>
+          <div class="equation compact">
+            <math display="block" aria-label="S 2 of n equals the sum from k equals 1 to n of k squared">
+              <mrow>
+                <msub><mi>S</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo>
+                <mo>=</mo>
+                <munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msup><mi>k</mi><mn>2</mn></msup>
+              </mrow>
+            </math>
+          </div>
+          <div class="equation compact">
+            <math display="block" aria-label="S 3 of n equals the sum from k equals 1 to n of k cubed">
+              <mrow>
+                <msub><mi>S</mi><mn>3</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo>
+                <mo>=</mo>
+                <munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msup><mi>k</mi><mn>3</mn></msup>
+              </mrow>
+            </math>
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <h3>4. The newest term is the difference of two consecutive totals</h3>
+          <p>
+            The total up to n contains everything in the total up to n minus one, plus one new term.
+            For squares, for example:
+          </p>
+          <div class="equation">
+            <math display="block" aria-label="S 2 of n equals S 2 of n minus 1 plus n squared">
+              <mrow>
+                <msub><mi>S</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo>
+                <mo>=</mo>
+                <msub><mi>S</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo>
+                <mo>+</mo><msup><mi>n</mi><mn>2</mn></msup>
+              </mrow>
+            </math>
+          </div>
+          <p>Subtract the earlier total from both sides:</p>
+          <div class="equation">
+            <math display="block" aria-label="S 2 of n minus S 2 of n minus 1 equals n squared">
+              <mrow>
+                <msub><mi>S</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo>
+                <mo>−</mo>
+                <msub><mi>S</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo>
+                <mo>=</mo><msup><mi>n</mi><mn>2</mn></msup>
+              </mrow>
+            </math>
+          </div>
+          <p class="plain-language">
+            This simple “new total minus old total equals the new term” fact is one of the main engines behind the later derivations.
+          </p>
+        </div>
+      </div>
+
+      <div class="definition">
+        <span class="label">Proof versus pattern</span>
+        <p>
+          Looking at several numerical examples can suggest a formula, but examples alone cannot prove that the formula works for every n.
+          A proof must explain why the equality is forced for all permitted values of n.
+        </p>
+      </div>
+    </section>
+
+    <section class="card" id="proof-toolkit">
+      <p class="section-kicker">Part 0B</p>
+      <h2>The proof toolkit: the exact rules that make every later step legal</h2>
+      <p class="lead">
+        A rigorous derivation is not just a chain of attractive formulas. We must know what the sum means,
+        why we may rearrange it, why cancellation works, and what would be enough to certify a proposed answer.
+        This section establishes those facts before using them.
+      </p>
+
+      <div class="rigour-banner">
+        <div class="seal" aria-hidden="true">✓</div>
+        <div>
+          <strong>Standard of proof used on this page</strong>
+          <p>
+            Every formula is derived from finite addition, ordinary multiplication, distributivity,
+            associativity, commutativity and division by a non-zero constant. Visual arguments are translated
+            into exact counting equations, and every candidate formula is checked against the defining recurrence.
+          </p>
+        </div>
+      </div>
+
+      <div class="law-grid">
+        <article class="law-card">
+          <h3>1. The sum is defined recursively</h3>
+          <p>For a fixed whole-number power <em>p</em>, define the running total by</p>
+          <div class="equation compact">
+            <math display="block" aria-label="S p of zero equals zero, and S p of n equals S p of n minus one plus n to the p">
+              <mtable columnalign="right center left">
+                <mtr><mtd><msub><mi>S</mi><mi>p</mi></msub><mo>(</mo><mn>0</mn><mo>)</mo></mtd><mtd><mo>=</mo></mtd><mtd><mn>0</mn></mtd></mtr>
+                <mtr><mtd><msub><mi>S</mi><mi>p</mi></msub><mo>(</mo><mi>n</mi><mo>)</mo></mtd><mtd><mo>=</mo></mtd><mtd><msub><mi>S</mi><mi>p</mi></msub><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>+</mo><msup><mi>n</mi><mi>p</mi></msup></mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>
+            The first line says that adding no terms gives zero. The second says that the new total is the old total
+            plus the newly arrived term. Repeatedly replacing the old total gives exactly
+            <span class="math-words">one to the p plus two to the p plus up to n to the p</span>.
+          </p>
+        </article>
+
+        <article class="law-card">
+          <h3>2. The algebra moves we use</h3>
+          <ul class="assumption-list">
+            <li><strong>Associativity:</strong> brackets may be regrouped in a finite sum.</li>
+            <li><strong>Commutativity:</strong> finitely many addends may be reordered.</li>
+            <li><strong>Distributivity:</strong> a common factor may be taken outside a finite sum.</li>
+            <li><strong>Equality rule:</strong> doing the same legal operation to both sides preserves equality.</li>
+            <li><strong>Safe division:</strong> we divide only by fixed non-zero numbers such as two, three, four or six.</li>
+          </ul>
+          <p class="small">
+            Nothing later depends on approximation. All formulas are exact identities for whole-number n.
+          </p>
+        </article>
+      </div>
+
+      <details open>
+        <summary>Finite-sum linearity proved by writing out the terms</summary>
+        <div class="details-body">
+          <p>Suppose <em>a</em><sub>k</sub> and <em>b</em><sub>k</sub> are two finite lists. Then</p>
+          <div class="equation">
+            <math display="block" aria-label="sum of a k plus b k equals sum of a k plus sum of b k">
+              <mtable columnalign="left">
+                <mtr><mtd><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mo>(</mo><msub><mi>a</mi><mi>k</mi></msub><mo>+</mo><msub><mi>b</mi><mi>k</mi></msub><mo>)</mo></mtd></mtr>
+                <mtr><mtd><mo>=</mo><mo>(</mo><msub><mi>a</mi><mn>1</mn></msub><mo>+</mo><msub><mi>b</mi><mn>1</mn></msub><mo>)</mo><mo>+</mo><mo>(</mo><msub><mi>a</mi><mn>2</mn></msub><mo>+</mo><msub><mi>b</mi><mn>2</mn></msub><mo>)</mo><mo>+</mo><mo>⋯</mo><mo>+</mo><mo>(</mo><msub><mi>a</mi><mi>n</mi></msub><mo>+</mo><msub><mi>b</mi><mi>n</mi></msub><mo>)</mo></mtd></mtr>
+                <mtr><mtd><mo>=</mo><mo>(</mo><msub><mi>a</mi><mn>1</mn></msub><mo>+</mo><msub><mi>a</mi><mn>2</mn></msub><mo>+</mo><mo>⋯</mo><mo>+</mo><msub><mi>a</mi><mi>n</mi></msub><mo>)</mo><mo>+</mo><mo>(</mo><msub><mi>b</mi><mn>1</mn></msub><mo>+</mo><msub><mi>b</mi><mn>2</mn></msub><mo>+</mo><mo>⋯</mo><mo>+</mo><msub><mi>b</mi><mi>n</mi></msub><mo>)</mo></mtd></mtr>
+                <mtr><mtd><mo>=</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mi>a</mi><mi>k</mi></msub><mo>+</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mi>b</mi><mi>k</mi></msub></mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>
+            The middle step uses only regrouping and reordering of finitely many additions. The same expansion proves
+            that a constant may be pulled outside: the sum of <em>c a</em><sub>k</sub> is <em>c</em> times the sum of <em>a</em><sub>k</sub>.
+          </p>
+          <div class="why-step"><strong>Why this matters:</strong> it justifies splitting a summed identity into separate sums and replacing the sum of one with n.</div>
+        </div>
+      </details>
+
+      <details open>
+        <summary>Reversing or reindexing a finite sum does not change its value</summary>
+        <div class="details-body">
+          <p>
+            The map <em>k</em> ↦ <em>n</em> + 1 − <em>k</em> sends the list 1, 2, …, n to the same list in reverse:
+            n, n − 1, …, 1. No term is lost and no term is repeated. Therefore
+          </p>
+          <div class="equation big-math">
+            <math display="block" aria-label="sum from k equals 1 to n of k equals sum from k equals 1 to n of n plus 1 minus k">
+              <mrow>
+                <munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mi>k</mi>
+                <mo>=</mo>
+                <munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>−</mo><mi>k</mi><mo>)</mo>.
+              </mrow>
+            </math>
+          </div>
+          <p>
+            This is not a mysterious new rule. It is simply the fact that finite addition is unaffected by the order in which the same addends are listed.
+          </p>
+        </div>
+      </details>
+
+      <details open>
+        <summary>The telescoping lemma proved with every cancellation visible</summary>
+        <div class="details-body">
+          <div class="lemma">
+            <span class="lemma-title">Telescoping lemma</span>
+            For any finite list A<sub>0</sub>, A<sub>1</sub>, …, A<sub>n</sub>,
+            the sum of the consecutive differences A<sub>k</sub> − A<sub>k−1</sub> equals A<sub>n</sub> − A<sub>0</sub>.
+          </div>
+          <div class="equation">
+            <math display="block" aria-label="sum from k equals 1 to n of A k minus A k minus 1 equals A n minus A zero">
+              <mtable columnalign="left">
+                <mtr><mtd><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mo>(</mo><msub><mi>A</mi><mi>k</mi></msub><mo>−</mo><msub><mi>A</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>)</mo></mtd></mtr>
+                <mtr><mtd><mo>=</mo><mo>(</mo><msub><mi>A</mi><mn>1</mn></msub><mo>−</mo><msub><mi>A</mi><mn>0</mn></msub><mo>)</mo><mo>+</mo><mo>(</mo><msub><mi>A</mi><mn>2</mn></msub><mo>−</mo><msub><mi>A</mi><mn>1</mn></msub><mo>)</mo><mo>+</mo><mo>⋯</mo><mo>+</mo><mo>(</mo><msub><mi>A</mi><mi>n</mi></msub><mo>−</mo><msub><mi>A</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>)</mo></mtd></mtr>
+                <mtr><mtd><mo>=</mo><msub><mi>A</mi><mi>n</mi></msub><mo>−</mo><msub><mi>A</mi><mn>0</mn></msub></mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>
+            A<sub>1</sub> appears once with a plus sign and once with a minus sign, so it contributes zero. The same is true of every internal term
+            A<sub>2</sub> through A<sub>n−1</sub>. Only the two boundary terms survive.
+          </p>
+        </div>
+      </details>
+
+      <details open>
+        <summary>The fundamental certificate: how to prove a proposed sum formula is the only possible answer</summary>
+        <div class="details-body">
+          <div class="theorem">
+            <span class="theorem-title">Finite-sum verification theorem</span>
+            Let F be any expression defined for non-negative integers. If
+            F(0) = 0 and F(n) − F(n−1) = n<sup>p</sup> for every positive integer n,
+            then F(n) equals 1<sup>p</sup> + 2<sup>p</sup> + ··· + n<sup>p</sup> for every n.
+          </div>
+          <p><strong>Proof.</strong> Add the claimed increment identity for k = 1, 2, …, n:</p>
+          <div class="equation">
+            <math display="block" aria-label="F n minus F zero equals sum of k to the p">
+              <mtable columnalign="right center left">
+                <mtr><mtd><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mo>[</mo><mi>F</mi><mo>(</mo><mi>k</mi><mo>)</mo><mo>−</mo><mi>F</mi><mo>(</mo><mi>k</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>]</mo></mtd><mtd><mo>=</mo></mtd><mtd><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msup><mi>k</mi><mi>p</mi></msup></mtd></mtr>
+                <mtr><mtd><mi>F</mi><mo>(</mo><mi>n</mi><mo>)</mo><mo>−</mo><mi>F</mi><mo>(</mo><mn>0</mn><mo>)</mo></mtd><mtd><mo>=</mo></mtd><mtd><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msup><mi>k</mi><mi>p</mi></msup></mtd></mtr>
+                <mtr><mtd><mi>F</mi><mo>(</mo><mi>n</mi><mo>)</mo></mtd><mtd><mo>=</mo></mtd><mtd><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msup><mi>k</mi><mi>p</mi></msup></mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>
+            The first left side telescopes; the final step uses F(0) = 0. This theorem is especially strong:
+            once the starting value and every increment are correct, there is no room for a different running-total sequence.
+          </p>
+        </div>
+      </details>
+
+      <h3>Proof ledger: what each later argument contributes</h3>
+      <div class="proof-ledger">
+        <div class="proof-ledger-item"><strong>Visual construction</strong><span>Explains the shape of the formula by counting the same finite collection in two ways.</span></div>
+        <div class="proof-ledger-item"><strong>Algebraic derivation</strong><span>Transforms exact identities until the desired sum is isolated.</span></div>
+        <div class="proof-ledger-item"><strong>Recurrence certificate</strong><span>Checks the candidate starts at zero and gains exactly the required next term.</span></div>
+        <div class="proof-ledger-item"><strong>Induction</strong><span>Provides a separate universal proof from the base case and the k-to-k-plus-one step.</span></div>
+        <div class="proof-ledger-item"><strong>Numerical JavaScript check</strong><span>Catches transcription or implementation errors, but is deliberately not treated as a proof by itself.</span></div>
+      </div>
+    </section>
+
+
+    <section class="card" id="laboratory">
+      <p class="section-kicker">Interactive laboratory</p>
+      <h2>Choose a value of n and check all three formulas</h2>
+      <p class="lead">
+        The left side is calculated by literally adding the terms. The right side is calculated from the claimed formula.
+        JavaScript uses exact whole-number arithmetic, so this is a genuine numerical check rather than a rounded decimal approximation.
+      </p>
+
+      <div class="control-panel">
+        <div class="control-row">
+          <label for="nInput">Choose n:</label>
+          <input id="nInput" type="number" min="1" max="50" step="1" value="6" inputmode="numeric">
+          <input id="nRange" type="range" min="1" max="50" step="1" value="6" aria-label="Choose n with a slider">
+          <button id="randomNBtn" class="secondary" type="button">Pick a random n</button>
+        </div>
+        <p class="small">The visual diagrams use a smaller representative size when n is large, but every displayed calculation uses your actual n.</p>
+      </div>
+
+      <div class="formula-grid spacer-top" aria-live="polite">
+        <article class="formula-card">
+          <div>
+            <p class="name">First powers</p>
+            <div id="terms1" class="terms"></div>
+          </div>
+          <div>
+            <div id="direct1" class="result-number"></div>
+            <div id="formula1Text" class="small"></div>
+            <div id="check1" class="check-line"></div>
+          </div>
+        </article>
+
+        <article class="formula-card">
+          <div>
+            <p class="name">Squares</p>
+            <div id="terms2" class="terms"></div>
+          </div>
+          <div>
+            <div id="direct2" class="result-number"></div>
+            <div id="formula2Text" class="small"></div>
+            <div id="check2" class="check-line"></div>
+          </div>
+        </article>
+
+        <article class="formula-card">
+          <div>
+            <p class="name">Cubes</p>
+            <div id="terms3" class="terms"></div>
+          </div>
+          <div>
+            <div id="direct3" class="result-number"></div>
+            <div id="formula3Text" class="small"></div>
+            <div id="check3" class="check-line"></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="card" id="first-powers">
+      <p class="section-kicker">Part 1</p>
+      <h2>Deriving the sum of the first n integers</h2>
+
+      <div class="equation big-math">
+        <math display="block" aria-label="the sum from k equals 1 to n of k equals n times n plus 1 over 2">
+          <mrow>
+            <munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mi>k</mi>
+            <mo>=</mo>
+            <mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac>
+          </mrow>
+        </math>
+      </div>
+
+      <div class="insight">
+        <span class="label">The key idea</span>
+        <p>
+          Pair the smallest term with the largest term, the next-smallest with the next-largest, and so on.
+          Every such pair has the same total, n plus one.
+        </p>
+      </div>
+
+      <h3>Complete pairing derivation</h3>
+      <ol class="steps">
+        <li>
+          <h4>Name the sum</h4>
+          <p>Let S be the total we want:</p>
+          <div class="equation compact">
+            <math display="block" aria-label="S equals 1 plus 2 plus 3 up to n minus 1 plus n">
+              <mrow>
+                <mi>S</mi><mo>=</mo><mn>1</mn><mo>+</mo><mn>2</mn><mo>+</mo><mn>3</mn><mo>+</mo><mo>⋯</mo><mo>+</mo>
+                <mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>+</mo><mi>n</mi>
+              </mrow>
+            </math>
+          </div>
+        </li>
+
+        <li>
+          <h4>Write the same sum in reverse order</h4>
+          <p>Changing the order does not change a finite addition total:</p>
+          <div class="equation compact">
+            <math display="block" aria-label="S equals n plus n minus 1 plus n minus 2 up to 2 plus 1">
+              <mrow>
+                <mi>S</mi><mo>=</mo><mi>n</mi><mo>+</mo><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>+</mo>
+                <mo>(</mo><mi>n</mi><mo>−</mo><mn>2</mn><mo>)</mo><mo>+</mo><mo>⋯</mo><mo>+</mo><mn>2</mn><mo>+</mo><mn>1</mn>
+              </mrow>
+            </math>
+          </div>
+        </li>
+
+        <li>
+          <h4>Add the two displayed copies column by column</h4>
+          <p>The first column is one plus n. The second is two plus n minus one. Every column gives n plus one:</p>
+          <div class="equation compact">
+            <math display="block" aria-label="1 plus n equals n plus 1, 2 plus n minus 1 equals n plus 1">
+              <mtable columnalign="right center left">
+                <mtr><mtd><mn>1</mn><mo>+</mo><mi>n</mi></mtd><mtd><mo>=</mo></mtd><mtd><mi>n</mi><mo>+</mo><mn>1</mn></mtd></mtr>
+                <mtr><mtd><mn>2</mn><mo>+</mo><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo></mtd><mtd><mo>=</mo></mtd><mtd><mi>n</mi><mo>+</mo><mn>1</mn></mtd></mtr>
+                <mtr><mtd><mn>3</mn><mo>+</mo><mo>(</mo><mi>n</mi><mo>−</mo><mn>2</mn><mo>)</mo></mtd><mtd><mo>=</mo></mtd><mtd><mi>n</mi><mo>+</mo><mn>1</mn></mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>
+            There are exactly n columns because the original sum has n terms. Therefore, adding two copies of S produces
+            n copies of n plus one.
+          </p>
+          <div class="equation big-math">
+            <math display="block" aria-label="2 S equals n times n plus 1">
+              <mrow><mn>2</mn><mi>S</mi><mo>=</mo><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow>
+            </math>
+          </div>
+        </li>
+
+        <li>
+          <h4>Divide by two because the left side contains two copies of S</h4>
+          <div class="equation big-math">
+            <math display="block" aria-label="S equals n times n plus 1 over 2">
+              <mrow>
+                <mi>S</mi><mo>=</mo>
+                <mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac>
+              </mrow>
+            </math>
+          </div>
+          <p>This is the required formula.</p>
+        </li>
+      </ol>
+
+      <div class="note">
+        <span class="label">Why odd n causes no problem</span>
+        <p>
+          When n is odd, there is a middle term. For example, with n equal to five, the middle term is three.
+          In the two-copy argument, that middle term appears once in each copy, so its column is three plus three,
+          which equals six, and six is n plus one. Nothing special has to be patched.
+        </p>
+      </div>
+
+      <details open>
+        <summary>Interactive pairing table for your chosen n</summary>
+        <div class="details-body">
+          <p>
+            The top row is the sum in forward order. The second row is the same sum in reverse order.
+            The final row shows that every column has the same total.
+          </p>
+          <div id="pairTable" class="table-wrap"></div>
+        </div>
+      </details>
+
+      <details open>
+        <summary>Geometric reason: two identical staircases make a rectangle</summary>
+        <div class="details-body">
+          <p>
+            A triangular staircase containing one dot in its first row, two in its second, and n in its last has S dots.
+            A second copy fills the gaps. Together they form a rectangle with n rows and n plus one columns.
+            The rectangle has n times n plus one dots, so either half has half that many.
+          </p>
+          <div id="dotRectangle" class="dot-rectangle" role="img" aria-label="Two equal triangular groups of dots filling a rectangle"></div>
+          <div class="legend">
+            <span class="legend-item"><span class="swatch a"></span>First staircase: S dots</span>
+            <span class="legend-item"><span class="swatch b"></span>Second staircase: S dots</span>
+          </div>
+          <p id="dotNote" class="small centred"></p>
+        </div>
+      </details>
+
+      <details open>
+        <summary>Worked example with n = 6</summary>
+        <div class="details-body">
+          <div class="worked-example">
+            <p>Direct addition:</p>
+            <div class="equation compact">
+              <math display="block" aria-label="1 plus 2 plus 3 plus 4 plus 5 plus 6 equals 21">
+                <mrow><mn>1</mn><mo>+</mo><mn>2</mn><mo>+</mo><mn>3</mn><mo>+</mo><mn>4</mn><mo>+</mo><mn>5</mn><mo>+</mo><mn>6</mn><mo>=</mo><mn>21</mn></mrow>
+              </math>
+            </div>
+            <p>Formula:</p>
+            <div class="equation compact">
+              <math display="block" aria-label="6 times 7 over 2 equals 42 over 2 equals 21">
+                <mrow>
+                  <mfrac><mrow><mn>6</mn><mo>×</mo><mn>7</mn></mrow><mn>2</mn></mfrac>
+                  <mo>=</mo><mfrac><mn>42</mn><mn>2</mn></mfrac><mo>=</mo><mn>21</mn>
+                </mrow>
+              </math>
+            </div>
+          </div>
+        </div>
+      </details>
+
+
+      <details open>
+        <summary>Direct even-n and odd-n pairing, with no hidden middle-term issue</summary>
+        <div class="details-body">
+          <div class="two-column-proof">
+            <div class="side-proof">
+              <h3>When n is even</h3>
+              <p>Write n = 2m. There are m ordinary pairs:</p>
+              <p class="centred"><strong>(1 + n), (2 + n − 1), …</strong></p>
+              <p>Each pair is n + 1, so</p>
+              <div class="equation compact">
+                <math display="block" aria-label="S equals m times n plus 1 equals n over 2 times n plus 1">
+                  <mrow><mi>S</mi><mo>=</mo><mi>m</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>=</mo><mfrac><mi>n</mi><mn>2</mn></mfrac><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo>.</mrow>
+                </math>
+              </div>
+            </div>
+            <div class="side-proof">
+              <h3>When n is odd</h3>
+              <p>Write n = 2m + 1. There are m outer pairs and one middle term m + 1:</p>
+              <div class="equation compact">
+                <math display="block" aria-label="S equals m times 2m plus 2 plus m plus 1">
+                  <mtable columnalign="right center left">
+                    <mtr><mtd><mi>S</mi></mtd><mtd><mo>=</mo></mtd><mtd><mi>m</mi><mo>(</mo><mn>2</mn><mi>m</mi><mo>+</mo><mn>2</mn><mo>)</mo><mo>+</mo><mo>(</mo><mi>m</mi><mo>+</mo><mn>1</mn><mo>)</mo></mtd></mtr>
+                    <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mo>(</mo><mi>m</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mn>2</mn><mi>m</mi><mo>+</mo><mn>1</mn><mo>)</mo></mtd></mtr>
+                    <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac></mtd></mtr>
+                  </mtable>
+                </math>
+              </div>
+            </div>
+          </div>
+          <div class="why-step">
+            <strong>Why the two-row proof is preferable:</strong> it handles even and odd n in one argument. The case split above is included only to remove any doubt about the middle term.
+          </div>
+        </div>
+      </details>
+
+      <details open>
+        <summary>Rigour certificate: the formula has exactly the right starting value and increment</summary>
+        <div class="details-body">
+          <p>Let</p>
+          <div class="equation compact">
+            <math display="block" aria-label="F one of n equals n times n plus 1 over 2">
+              <mrow><msub><mi>F</mi><mn>1</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo><mo>=</mo><mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac>.</mrow>
+            </math>
+          </div>
+          <p>First, F<sub>1</sub>(0) = 0. Next, for n ≥ 1:</p>
+          <div class="equation">
+            <math display="block" aria-label="F one n minus F one n minus 1 equals n">
+              <mtable columnalign="right center left">
+                <mtr><mtd><msub><mi>F</mi><mn>1</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo><mo>−</mo><msub><mi>F</mi><mn>1</mn></msub><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo></mtd><mtd><mo>=</mo></mtd><mtd><mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>−</mo><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo><mi>n</mi></mrow><mn>2</mn></mfrac></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mfrac><mrow><mi>n</mi><mo>[</mo><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>−</mo><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>]</mo></mrow><mn>2</mn></mfrac></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mfrac><mrow><mi>n</mi><mo>(</mo><mn>2</mn><mo>)</mo></mrow><mn>2</mn></mfrac><mo>=</mo><mi>n</mi>.</mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <div class="formula-verdict">By the finite-sum verification theorem, this expression must equal 1 + 2 + ··· + n for every permitted n.</div>
+        </div>
+      </details>
+
+      <details open>
+        <summary>Where the quadratic form comes from: finite differences rather than a lucky guess</summary>
+        <div class="details-body">
+          <p>
+            The running totals are 0, 1, 3, 6, 10, … . Their first differences are 1, 2, 3, 4, …,
+            and the differences of those differences are constantly 1. A quadratic expression has constant second differences,
+            so a quadratic is the natural smallest-degree candidate.
+          </p>
+          <div id="differenceTable1" class="table-wrap"></div>
+          <p>Write the most general quadratic candidate:</p>
+          <div class="equation compact">
+            <math display="block" aria-label="F n equals a n squared plus b n plus c">
+              <mrow><mi>F</mi><mo>(</mo><mi>n</mi><mo>)</mo><mo>=</mo><mi>a</mi><msup><mi>n</mi><mn>2</mn></msup><mo>+</mo><mi>b</mi><mi>n</mi><mo>+</mo><mi>c</mi>.</mrow>
+            </math>
+          </div>
+          <p>Its new-term difference is</p>
+          <div class="equation">
+            <math display="block" aria-label="F n minus F n minus 1 equals 2a n plus b minus a">
+              <mtable columnalign="right center left">
+                <mtr><mtd><mi>F</mi><mo>(</mo><mi>n</mi><mo>)</mo><mo>−</mo><mi>F</mi><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo></mtd><mtd><mo>=</mo></mtd><mtd><mi>a</mi><mo>[</mo><msup><mi>n</mi><mn>2</mn></msup><mo>−</mo><msup><mrow><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup><mo>]</mo><mo>+</mo><mi>b</mi></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mn>2</mn><mi>a</mi><mi>n</mi><mo>+</mo><mo>(</mo><mi>b</mi><mo>−</mo><mi>a</mi><mo>)</mo>.</mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>
+            We need this to equal n for every n. Therefore 2a = 1 and b − a = 0, giving a = b = 1/2.
+            The empty total F(0) = 0 gives c = 0. Hence
+          </p>
+          <div class="equation big-math">
+            <math display="block" aria-label="F n equals one half n squared plus one half n equals n times n plus 1 over 2">
+              <mrow><mi>F</mi><mo>(</mo><mi>n</mi><mo>)</mo><mo>=</mo><mfrac><msup><mi>n</mi><mn>2</mn></msup><mn>2</mn></mfrac><mo>+</mo><mfrac><mi>n</mi><mn>2</mn></mfrac><mo>=</mo><mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac>.</mrow>
+            </math>
+          </div>
+        </div>
+      </details>
+
+    </section>
+
+    <section class="card" id="squares">
+      <p class="section-kicker">Part 2</p>
+      <h2>Deriving the sum of the first n squares</h2>
+
+      <div class="equation big-math">
+        <math display="block" aria-label="the sum from k equals 1 to n of k squared equals n times n plus 1 times 2n plus 1 over 6">
+          <mrow>
+            <munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msup><mi>k</mi><mn>2</mn></msup>
+            <mo>=</mo>
+            <mfrac>
+              <mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mn>2</mn><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow>
+              <mn>6</mn>
+            </mfrac>
+          </mrow>
+        </math>
+      </div>
+
+      <div class="insight">
+        <span class="label">The key idea</span>
+        <p>
+          The difference between consecutive cubes contains a square term. When we add many consecutive-cube differences,
+          the internal cubes cancel. This is called <strong>telescoping</strong>.
+        </p>
+      </div>
+
+      <h3>Main derivation from the difference of consecutive cubes</h3>
+      <ol class="steps">
+        <li>
+          <h4>Expand the next cube from ordinary multiplication</h4>
+          <p>We do not assume the binomial theorem. We multiply directly:</p>
+          <div class="equation">
+            <math display="block" aria-label="k plus 1 cubed equals k plus 1 times k plus 1 times k plus 1">
+              <mrow>
+                <msup><mrow><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>3</mn></msup>
+                <mo>=</mo>
+                <mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo>
+                <mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo>
+                <mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo>
+              </mrow>
+            </math>
+          </div>
+          <div class="equation">
+            <math display="block" aria-label="k plus 1 squared equals k squared plus 2k plus 1">
+              <mrow>
+                <mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo>
+                <mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo>
+                <mo>=</mo>
+                <msup><mi>k</mi><mn>2</mn></msup><mo>+</mo><mn>2</mn><mi>k</mi><mo>+</mo><mn>1</mn>
+              </mrow>
+            </math>
+          </div>
+          <div class="equation">
+            <math display="block" aria-label="k squared plus 2k plus 1 times k plus 1 equals k cubed plus 3k squared plus 3k plus 1">
+              <mtable columnalign="left">
+                <mtr>
+                  <mtd>
+                    <mo>(</mo><msup><mi>k</mi><mn>2</mn></msup><mo>+</mo><mn>2</mn><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo>
+                    <mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo>
+                  </mtd>
+                </mtr>
+                <mtr>
+                  <mtd>
+                    <mo>=</mo><msup><mi>k</mi><mn>3</mn></msup><mo>+</mo><msup><mi>k</mi><mn>2</mn></msup>
+                    <mo>+</mo><mn>2</mn><msup><mi>k</mi><mn>2</mn></msup><mo>+</mo><mn>2</mn><mi>k</mi>
+                    <mo>+</mo><mi>k</mi><mo>+</mo><mn>1</mn>
+                  </mtd>
+                </mtr>
+                <mtr>
+                  <mtd>
+                    <mo>=</mo><msup><mi>k</mi><mn>3</mn></msup><mo>+</mo><mn>3</mn><msup><mi>k</mi><mn>2</mn></msup>
+                    <mo>+</mo><mn>3</mn><mi>k</mi><mo>+</mo><mn>1</mn>
+                  </mtd>
+                </mtr>
+              </mtable>
+            </math>
+          </div>
+        </li>
+
+        <li>
+          <h4>Subtract k cubed from both sides</h4>
+          <div class="equation big-math">
+            <math display="block" aria-label="k plus 1 cubed minus k cubed equals 3k squared plus 3k plus 1">
+              <mrow>
+                <msup><mrow><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>3</mn></msup>
+                <mo>−</mo><msup><mi>k</mi><mn>3</mn></msup>
+                <mo>=</mo><mn>3</mn><msup><mi>k</mi><mn>2</mn></msup><mo>+</mo><mn>3</mn><mi>k</mi><mo>+</mo><mn>1</mn>
+              </mrow>
+            </math>
+          </div>
+          <p>Rearrange so the square term is isolated:</p>
+          <div class="equation big-math">
+            <math display="block" aria-label="3k squared equals k plus 1 cubed minus k cubed minus 3k minus 1">
+              <mrow>
+                <mn>3</mn><msup><mi>k</mi><mn>2</mn></msup>
+                <mo>=</mo>
+                <msup><mrow><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>3</mn></msup>
+                <mo>−</mo><msup><mi>k</mi><mn>3</mn></msup><mo>−</mo><mn>3</mn><mi>k</mi><mo>−</mo><mn>1</mn>
+              </mrow>
+            </math>
+          </div>
+        </li>
+
+        <li>
+          <h4>Add that identity for every k from one to n</h4>
+          <div class="equation">
+            <math display="block" aria-label="3 times the sum of k squared equals the sum of consecutive cube differences minus 3 times the sum of k minus the sum of 1">
+              <mrow>
+                <mn>3</mn>
+                <munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover>
+                <msup><mi>k</mi><mn>2</mn></msup>
+                <mo>=</mo>
+                <munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover>
+                <mrow>
+                  <mo>[</mo>
+                  <msup><mrow><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>3</mn></msup>
+                  <mo>−</mo><msup><mi>k</mi><mn>3</mn></msup>
+                  <mo>]</mo>
+                </mrow>
+                <mo>−</mo><mn>3</mn>
+                <munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mi>k</mi>
+                <mo>−</mo>
+                <munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mn>1</mn>
+              </mrow>
+            </math>
+          </div>
+          <p>
+            The last sum is especially simple: adding one exactly n times gives n, so
+            the sum of one from k equals one to n is n.
+          </p>
+        </li>
+
+        <li>
+          <h4>Show the telescoping cancellation explicitly</h4>
+          <p>The consecutive-cube part is</p>
+          <div class="cancel-demo" aria-label="telescoping cancellation of consecutive cubes">
+            (<span class="cancelled">2³</span> − <span class="survivor">1³</span>) +
+            (<span class="cancelled">3³</span> − <span class="cancelled">2³</span>) +
+            (<span class="cancelled">4³</span> − <span class="cancelled">3³</span>) + ··· +
+            (<span class="survivor">(n + 1)³</span> − <span class="cancelled">n³</span>)
+          </div>
+          <p>
+            Every positive internal cube is cancelled by the matching negative cube in the next bracket.
+            Only the final positive cube and the first negative cube survive:
+          </p>
+          <div class="equation big-math">
+            <math display="block" aria-label="the sum of consecutive cube differences equals n plus 1 cubed minus 1 cubed">
+              <mrow>
+                <munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover>
+                <mrow>
+                  <mo>[</mo>
+                  <msup><mrow><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>3</mn></msup>
+                  <mo>−</mo><msup><mi>k</mi><mn>3</mn></msup>
+                  <mo>]</mo>
+                </mrow>
+                <mo>=</mo>
+                <msup><mrow><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>3</mn></msup>
+                <mo>−</mo><msup><mn>1</mn><mn>3</mn></msup>
+              </mrow>
+            </math>
+          </div>
+        </li>
+
+        <li>
+          <h4>Insert the formula already proved for the sum of the first n integers</h4>
+          <div class="equation">
+            <math display="block" aria-label="3 S 2 of n equals n plus 1 cubed minus 1 minus 3n times n plus 1 over 2 minus n">
+              <mrow>
+                <mn>3</mn><msub><mi>S</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo>
+                <mo>=</mo>
+                <msup><mrow><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>3</mn></msup>
+                <mo>−</mo><mn>1</mn>
+                <mo>−</mo><mn>3</mn>
+                <mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac>
+                <mo>−</mo><mi>n</mi>
+              </mrow>
+            </math>
+          </div>
+        </li>
+
+        <li>
+          <h4>Simplify carefully, one line at a time</h4>
+          <div class="equation">
+            <math display="block" aria-label="3 S 2 of n equals n cubed plus 3n squared plus 3n minus 3n squared plus 3n over 2 minus n">
+              <mrow>
+                <mn>3</mn><msub><mi>S</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo>
+                <mo>=</mo>
+                <msup><mi>n</mi><mn>3</mn></msup><mo>+</mo><mn>3</mn><msup><mi>n</mi><mn>2</mn></msup><mo>+</mo><mn>3</mn><mi>n</mi>
+                <mo>−</mo>
+                <mfrac><mrow><mn>3</mn><msup><mi>n</mi><mn>2</mn></msup><mo>+</mo><mn>3</mn><mi>n</mi></mrow><mn>2</mn></mfrac>
+                <mo>−</mo><mi>n</mi>
+              </mrow>
+            </math>
+          </div>
+          <p>Put every term over the common denominator two:</p>
+          <div class="equation">
+            <math display="block" aria-label="3 S 2 of n equals 2n cubed plus 6n squared plus 6n minus 3n squared minus 3n minus 2n all over 2">
+              <mrow>
+                <mn>3</mn><msub><mi>S</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo>
+                <mo>=</mo>
+                <mfrac>
+                  <mrow>
+                    <mn>2</mn><msup><mi>n</mi><mn>3</mn></msup>
+                    <mo>+</mo><mn>6</mn><msup><mi>n</mi><mn>2</mn></msup>
+                    <mo>+</mo><mn>6</mn><mi>n</mi>
+                    <mo>−</mo><mn>3</mn><msup><mi>n</mi><mn>2</mn></msup>
+                    <mo>−</mo><mn>3</mn><mi>n</mi>
+                    <mo>−</mo><mn>2</mn><mi>n</mi>
+                  </mrow>
+                  <mn>2</mn>
+                </mfrac>
+              </mrow>
+            </math>
+          </div>
+          <p>Collect like terms:</p>
+          <div class="equation">
+            <math display="block" aria-label="3 S 2 of n equals 2n cubed plus 3n squared plus n over 2">
+              <mrow>
+                <mn>3</mn><msub><mi>S</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo>
+                <mo>=</mo>
+                <mfrac><mrow><mn>2</mn><msup><mi>n</mi><mn>3</mn></msup><mo>+</mo><mn>3</mn><msup><mi>n</mi><mn>2</mn></msup><mo>+</mo><mi>n</mi></mrow><mn>2</mn></mfrac>
+              </mrow>
+            </math>
+          </div>
+          <p>Factor out n, then factor the quadratic:</p>
+          <div class="equation">
+            <math display="block" aria-label="2n squared plus 3n plus 1 equals 2n plus 1 times n plus 1">
+              <mtable columnalign="right center left">
+                <mtr>
+                  <mtd><mn>3</mn><msub><mi>S</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo></mtd>
+                  <mtd><mo>=</mo></mtd>
+                  <mtd><mfrac><mrow><mi>n</mi><mo>(</mo><mn>2</mn><msup><mi>n</mi><mn>2</mn></msup><mo>+</mo><mn>3</mn><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac></mtd>
+                </mtr>
+                <mtr>
+                  <mtd></mtd><mtd><mo>=</mo></mtd>
+                  <mtd><mfrac><mrow><mi>n</mi><mo>(</mo><mn>2</mn><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac></mtd>
+                </mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>Finally divide both sides by three:</p>
+          <div class="equation big-math">
+            <math display="block" aria-label="S 2 of n equals n times n plus 1 times 2n plus 1 over 6">
+              <mrow>
+                <msub><mi>S</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo>
+                <mo>=</mo>
+                <mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mn>2</mn><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>6</mn></mfrac>
+              </mrow>
+            </math>
+          </div>
+        </li>
+      </ol>
+
+      <details open>
+        <summary>Interactive table: checking the consecutive-cube identity</summary>
+        <div class="details-body">
+          <p>
+            Each row verifies that the left side and right side of
+            (k plus one) cubed minus k cubed equals three k squared plus three k plus one are identical.
+          </p>
+          <div id="squareIdentityTable" class="table-wrap"></div>
+        </div>
+      </details>
+
+      <details open>
+        <summary>How someone can discover the square-sum formula systematically</summary>
+        <div class="details-body">
+          <p>
+            The telescoping proof above proves the formula. The following coefficient method explains why a cubic-shaped answer is natural
+            and shows how its coefficients can be found rather than guessed.
+          </p>
+
+          <div class="definition">
+            <span class="label">Why try a cubic?</span>
+            <p>
+              Consecutive square terms grow like a degree-two expression. Taking a running total raises the degree by one,
+              so we look for a degree-three expression. This is a discovery method. The resulting formula is then independently proved.
+            </p>
+          </div>
+
+          <p>Suppose the total has the general cubic form</p>
+          <div class="equation">
+            <math display="block" aria-label="S 2 of n equals a n cubed plus b n squared plus c n plus d">
+              <mrow>
+                <msub><mi>S</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo>
+                <mo>=</mo><mi>a</mi><msup><mi>n</mi><mn>3</mn></msup><mo>+</mo><mi>b</mi><msup><mi>n</mi><mn>2</mn></msup><mo>+</mo><mi>c</mi><mi>n</mi><mo>+</mo><mi>d</mi>
+              </mrow>
+            </math>
+          </div>
+
+          <p>The empty sum at n equals zero is zero, so d equals zero. Also, the newest-term rule says</p>
+          <div class="equation">
+            <math display="block" aria-label="S 2 of n minus S 2 of n minus 1 equals n squared">
+              <mrow>
+                <msub><mi>S</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo><mo>−</mo>
+                <msub><mi>S</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo>
+                <mo>=</mo><msup><mi>n</mi><mn>2</mn></msup>
+              </mrow>
+            </math>
+          </div>
+
+          <p>Use these elementary differences:</p>
+          <div class="equation">
+            <math display="block" aria-label="differences of n cubed, n squared and n">
+              <mtable columnalign="left">
+                <mtr><mtd><msup><mi>n</mi><mn>3</mn></msup><mo>−</mo><msup><mrow><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mn>3</mn></msup><mo>=</mo><mn>3</mn><msup><mi>n</mi><mn>2</mn></msup><mo>−</mo><mn>3</mn><mi>n</mi><mo>+</mo><mn>1</mn></mtd></mtr>
+                <mtr><mtd><msup><mi>n</mi><mn>2</mn></msup><mo>−</mo><msup><mrow><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup><mo>=</mo><mn>2</mn><mi>n</mi><mo>−</mo><mn>1</mn></mtd></mtr>
+                <mtr><mtd><mi>n</mi><mo>−</mo><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>=</mo><mn>1</mn></mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+
+          <p>Therefore the difference of the proposed cubic is</p>
+          <div class="equation">
+            <math display="block" aria-label="3a n squared plus negative 3a plus 2b n plus a minus b plus c equals n squared">
+              <mrow>
+                <mn>3</mn><mi>a</mi><msup><mi>n</mi><mn>2</mn></msup>
+                <mo>+</mo><mo>(</mo><mo>−</mo><mn>3</mn><mi>a</mi><mo>+</mo><mn>2</mn><mi>b</mi><mo>)</mo><mi>n</mi>
+                <mo>+</mo><mo>(</mo><mi>a</mi><mo>−</mo><mi>b</mi><mo>+</mo><mi>c</mi><mo>)</mo>
+                <mo>=</mo><msup><mi>n</mi><mn>2</mn></msup>
+              </mrow>
+            </math>
+          </div>
+
+          <p>
+            Two polynomials are equal for every n only when the coefficients of matching powers agree. Here is a direct proof for the exact quadratic comparison being used.
+            Move the right side to the left and call the three resulting coefficients A, B and C. Then
+            A n² + B n + C = 0 for every positive integer n. Substituting n = 1, 2 and 3 gives
+          </p>
+          <div class="equation compact">
+            <math display="block" aria-label="A plus B plus C equals zero, 4A plus 2B plus C equals zero, 9A plus 3B plus C equals zero">
+              <mtable columnalign="right center left">
+                <mtr><mtd><mi>A</mi><mo>+</mo><mi>B</mi><mo>+</mo><mi>C</mi></mtd><mtd><mo>=</mo></mtd><mtd><mn>0</mn></mtd></mtr>
+                <mtr><mtd><mn>4</mn><mi>A</mi><mo>+</mo><mn>2</mn><mi>B</mi><mo>+</mo><mi>C</mi></mtd><mtd><mo>=</mo></mtd><mtd><mn>0</mn></mtd></mtr>
+                <mtr><mtd><mn>9</mn><mi>A</mi><mo>+</mo><mn>3</mn><mi>B</mi><mo>+</mo><mi>C</mi></mtd><mtd><mo>=</mo></mtd><mtd><mn>0</mn></mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>
+            Subtracting the first equation from the second gives 3A + B = 0. Subtracting the second from the third gives 5A + B = 0.
+            Subtract those two new equations: 2A = 0, so A = 0. Then B = 0 and finally C = 0. Thus every matching coefficient really must agree.
+            Therefore:
+          </p>
+          <div class="equation">
+            <math display="block" aria-label="3a equals 1, negative 3a plus 2b equals 0, a minus b plus c equals 0">
+              <mtable columnalign="right center left">
+                <mtr><mtd><mn>3</mn><mi>a</mi></mtd><mtd><mo>=</mo></mtd><mtd><mn>1</mn></mtd></mtr>
+                <mtr><mtd><mo>−</mo><mn>3</mn><mi>a</mi><mo>+</mo><mn>2</mn><mi>b</mi></mtd><mtd><mo>=</mo></mtd><mtd><mn>0</mn></mtd></mtr>
+                <mtr><mtd><mi>a</mi><mo>−</mo><mi>b</mi><mo>+</mo><mi>c</mi></mtd><mtd><mo>=</mo></mtd><mtd><mn>0</mn></mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+
+          <p>Solving gives</p>
+          <div class="equation">
+            <math display="block" aria-label="a equals one third, b equals one half, c equals one sixth">
+              <mrow>
+                <mi>a</mi><mo>=</mo><mfrac><mn>1</mn><mn>3</mn></mfrac><mo>,</mo>
+                <mspace width="1em"></mspace>
+                <mi>b</mi><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>,</mo>
+                <mspace width="1em"></mspace>
+                <mi>c</mi><mo>=</mo><mfrac><mn>1</mn><mn>6</mn></mfrac>
+              </mrow>
+            </math>
+          </div>
+
+          <div class="equation">
+            <math display="block" aria-label="S 2 of n equals one third n cubed plus one half n squared plus one sixth n equals n times n plus 1 times 2n plus 1 over 6">
+              <mrow>
+                <msub><mi>S</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo>
+                <mo>=</mo><mfrac><msup><mi>n</mi><mn>3</mn></msup><mn>3</mn></mfrac>
+                <mo>+</mo><mfrac><msup><mi>n</mi><mn>2</mn></msup><mn>2</mn></mfrac>
+                <mo>+</mo><mfrac><mi>n</mi><mn>6</mn></mfrac>
+                <mo>=</mo>
+                <mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mn>2</mn><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>6</mn></mfrac>
+              </mrow>
+            </math>
+          </div>
+        </div>
+      </details>
+
+      <details open>
+        <summary>Worked example with n = 4</summary>
+        <div class="details-body">
+          <p>Direct addition:</p>
+          <div class="equation compact">
+            <math display="block" aria-label="1 squared plus 2 squared plus 3 squared plus 4 squared equals 1 plus 4 plus 9 plus 16 equals 30">
+              <mrow>
+                <msup><mn>1</mn><mn>2</mn></msup><mo>+</mo><msup><mn>2</mn><mn>2</mn></msup><mo>+</mo><msup><mn>3</mn><mn>2</mn></msup><mo>+</mo><msup><mn>4</mn><mn>2</mn></msup>
+                <mo>=</mo><mn>1</mn><mo>+</mo><mn>4</mn><mo>+</mo><mn>9</mn><mo>+</mo><mn>16</mn><mo>=</mo><mn>30</mn>
+              </mrow>
+            </math>
+          </div>
+          <p>Formula:</p>
+          <div class="equation compact">
+            <math display="block" aria-label="4 times 5 times 9 over 6 equals 180 over 6 equals 30">
+              <mrow>
+                <mfrac><mrow><mn>4</mn><mo>×</mo><mn>5</mn><mo>×</mo><mn>9</mn></mrow><mn>6</mn></mfrac>
+                <mo>=</mo><mfrac><mn>180</mn><mn>6</mn></mfrac><mo>=</mo><mn>30</mn>
+              </mrow>
+            </math>
+          </div>
+        </div>
+      </details>
+
+
+      <details open>
+        <summary>A second telescoping derivation with cleaner end points: use k³ − (k − 1)³</summary>
+        <div class="details-body">
+          <p>
+            The earlier derivation used (k + 1)³ − k³. The following equivalent version starts at 1³ − 0³ and ends at n³ − (n − 1)³,
+            so the telescoping boundary becomes exactly n³.
+          </p>
+          <p>First expand (k − 1)³ by direct multiplication:</p>
+          <div class="equation">
+            <math display="block" aria-label="k minus 1 cubed equals k cubed minus 3k squared plus 3k minus 1">
+              <mrow><msup><mrow><mo>(</mo><mi>k</mi><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mn>3</mn></msup><mo>=</mo><msup><mi>k</mi><mn>3</mn></msup><mo>−</mo><mn>3</mn><msup><mi>k</mi><mn>2</mn></msup><mo>+</mo><mn>3</mn><mi>k</mi><mo>−</mo><mn>1</mn>.</mrow>
+            </math>
+          </div>
+          <p>Subtract this from k³:</p>
+          <div class="equation big-math">
+            <math display="block" aria-label="k cubed minus k minus 1 cubed equals 3k squared minus 3k plus 1">
+              <mrow><msup><mi>k</mi><mn>3</mn></msup><mo>−</mo><msup><mrow><mo>(</mo><mi>k</mi><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mn>3</mn></msup><mo>=</mo><mn>3</mn><msup><mi>k</mi><mn>2</mn></msup><mo>−</mo><mn>3</mn><mi>k</mi><mo>+</mo><mn>1</mn>.</mrow>
+            </math>
+          </div>
+          <p>Now sum this identity from k = 1 to n:</p>
+          <div class="equation">
+            <math display="block" aria-label="n cubed equals 3 S two minus 3 S one plus n">
+              <mtable columnalign="right center left">
+                <mtr><mtd><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mo>[</mo><msup><mi>k</mi><mn>3</mn></msup><mo>−</mo><msup><mrow><mo>(</mo><mi>k</mi><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mn>3</mn></msup><mo>]</mo></mtd><mtd><mo>=</mo></mtd><mtd><mn>3</mn><msub><mi>S</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo><mo>−</mo><mn>3</mn><msub><mi>S</mi><mn>1</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo><mo>+</mo><mi>n</mi></mtd></mtr>
+                <mtr><mtd><msup><mi>n</mi><mn>3</mn></msup><mo>−</mo><msup><mn>0</mn><mn>3</mn></msup></mtd><mtd><mo>=</mo></mtd><mtd><mn>3</mn><msub><mi>S</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo><mo>−</mo><mn>3</mn><msub><mi>S</mi><mn>1</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo><mo>+</mo><mi>n</mi>.</mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>Insert S<sub>1</sub>(n) = n(n + 1)/2 and solve:</p>
+          <div class="equation">
+            <math display="block" aria-label="3 S two equals n cubed plus 3 n n plus 1 over 2 minus n">
+              <mtable columnalign="right center left">
+                <mtr><mtd><mn>3</mn><msub><mi>S</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo></mtd><mtd><mo>=</mo></mtd><mtd><msup><mi>n</mi><mn>3</mn></msup><mo>+</mo><mfrac><mrow><mn>3</mn><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac><mo>−</mo><mi>n</mi></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mfrac><mrow><mn>2</mn><msup><mi>n</mi><mn>3</mn></msup><mo>+</mo><mn>3</mn><msup><mi>n</mi><mn>2</mn></msup><mo>+</mo><mi>n</mi></mrow><mn>2</mn></mfrac></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mfrac><mrow><mi>n</mi><mo>(</mo><mn>2</mn><msup><mi>n</mi><mn>2</mn></msup><mo>+</mo><mn>3</mn><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mn>2</mn><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac>.</mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>Divide by 3:</p>
+          <div class="equation big-math">
+            <math display="block" aria-label="S two of n equals n times n plus 1 times 2n plus 1 over 6">
+              <mrow><msub><mi>S</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo><mo>=</mo><mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mn>2</mn><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>6</mn></mfrac>.</mrow>
+            </math>
+          </div>
+          <div class="why-step"><strong>Factor check:</strong> (n + 1)(2n + 1) expands to 2n² + 3n + 1, so no factorisation has been assumed without verification.</div>
+        </div>
+      </details>
+
+      <details open>
+        <summary>Visual proof with odd-number gnomons: every square is built from 1, 3, 5, … cells</summary>
+        <div class="details-body">
+          <p>
+            Growing a (j − 1)-by-(j − 1) square into a j-by-j square adds one new bottom row of j cells and one new right column of j cells,
+            but the bottom-right corner belongs to both, so count it once. The number added is j + j − 1 = 2j − 1.
+          </p>
+          <div class="equation big-math">
+            <math display="block" aria-label="j squared minus j minus 1 squared equals 2j minus 1">
+              <mrow><msup><mi>j</mi><mn>2</mn></msup><mo>−</mo><msup><mrow><mo>(</mo><mi>j</mi><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup><mo>=</mo><mn>2</mn><mi>j</mi><mo>−</mo><mn>1</mn>.</mrow>
+            </math>
+          </div>
+          <div id="squareGnomonGallery" class="gnomon-gallery" aria-live="polite"></div>
+          <p class="small centred" id="squareGnomonNote"></p>
+
+          <p>
+            In the collection 1² + 2² + ··· + n², the jth odd layer appears in every square whose side is at least j:
+            the j-by-j square, the (j + 1)-by-(j + 1) square, …, the n-by-n square. That is exactly n − j + 1 appearances.
+          </p>
+          <div id="gnomonMultiplicityTable" class="table-wrap"></div>
+
+          <p>Therefore, counting all cells layer by layer gives</p>
+          <div class="equation">
+            <math display="block" aria-label="S two equals sum from j equals 1 to n of n minus j plus 1 times 2j minus 1">
+              <mrow><msub><mi>S</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo><mo>=</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mo>(</mo><mi>n</mi><mo>−</mo><mi>j</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mn>2</mn><mi>j</mi><mo>−</mo><mn>1</mn><mo>)</mo>.</mrow>
+            </math>
+          </div>
+          <p>Now separate the known pieces, carefully:</p>
+          <div class="equation">
+            <math display="block" aria-label="S two equals n plus 1 times sum of odd numbers minus 2 S two plus S one">
+              <mtable columnalign="right center left">
+                <mtr><mtd><msub><mi>S</mi><mn>2</mn></msub></mtd><mtd><mo>=</mo></mtd><mtd><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mo>[</mo><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mn>2</mn><mi>j</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>−</mo><mi>j</mi><mo>(</mo><mn>2</mn><mi>j</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>]</mo></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mo>(</mo><mn>2</mn><mi>j</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>−</mo><mn>2</mn><msub><mi>S</mi><mn>2</mn></msub><mo>+</mo><msub><mi>S</mi><mn>1</mn></msub></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><msup><mi>n</mi><mn>2</mn></msup><mo>−</mo><mn>2</mn><msub><mi>S</mi><mn>2</mn></msub><mo>+</mo><msub><mi>S</mi><mn>1</mn></msub>.</mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>
+            The identity 1 + 3 + ··· + (2n − 1) = n² follows from the same square layers. Algebraically, each odd number is a consecutive-square difference:
+          </p>
+          <div class="equation">
+            <math display="block" aria-label="sum of the first n odd numbers telescopes to n squared">
+              <mtable columnalign="right center left">
+                <mtr><mtd><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mo>(</mo><mn>2</mn><mi>j</mi><mo>−</mo><mn>1</mn><mo>)</mo></mtd><mtd><mo>=</mo></mtd><mtd><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mo>[</mo><msup><mi>j</mi><mn>2</mn></msup><mo>−</mo><msup><mrow><mo>(</mo><mi>j</mi><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup><mo>]</mo></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><msup><mi>n</mi><mn>2</mn></msup><mo>−</mo><msup><mn>0</mn><mn>2</mn></msup><mo>=</mo><msup><mi>n</mi><mn>2</mn></msup>.</mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>Use that result and move the two copies of S<sub>2</sub> to the left:</p>
+          <div class="equation">
+            <math display="block" aria-label="3 S two equals n plus 1 n squared plus S one">
+              <mtable columnalign="right center left">
+                <mtr><mtd><mn>3</mn><msub><mi>S</mi><mn>2</mn></msub></mtd><mtd><mo>=</mo></mtd><mtd><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><msup><mi>n</mi><mn>2</mn></msup><mo>+</mo><mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mn>2</mn><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac>.</mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>Dividing by 3 gives the square-sum formula.</p>
+          <div class="why-step"><strong>Why this is not circular:</strong> S<sub>2</sub> appears on both sides because we counted the same unknown collection in a different order. The resulting linear equation 3S<sub>2</sub> = known quantity is then solved normally.</div>
+        </div>
+      </details>
+
+      <details open>
+        <summary>Rigour certificate: the proposed square formula gains exactly n²</summary>
+        <div class="details-body">
+          <p>Define</p>
+          <div class="equation compact">
+            <math display="block" aria-label="F two n equals n n plus 1 2n plus 1 over 6">
+              <mrow><msub><mi>F</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo><mo>=</mo><mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mn>2</mn><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>6</mn></mfrac>.</mrow>
+            </math>
+          </div>
+          <p>Clearly F<sub>2</sub>(0) = 0. Its increment is</p>
+          <div class="equation">
+            <math display="block" aria-label="F two n minus F two n minus one equals n squared">
+              <mtable columnalign="right center left">
+                <mtr><mtd><msub><mi>F</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo><mo>−</mo><msub><mi>F</mi><mn>2</mn></msub><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo></mtd><mtd><mo>=</mo></mtd><mtd><mfrac><mrow><mi>n</mi><mo>[</mo><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mn>2</mn><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>−</mo><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>(</mo><mn>2</mn><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>]</mo></mrow><mn>6</mn></mfrac></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mfrac><mrow><mi>n</mi><mo>[</mo><mo>(</mo><mn>2</mn><msup><mi>n</mi><mn>2</mn></msup><mo>+</mo><mn>3</mn><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>−</mo><mo>(</mo><mn>2</mn><msup><mi>n</mi><mn>2</mn></msup><mo>−</mo><mn>3</mn><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>]</mo></mrow><mn>6</mn></mfrac></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mfrac><mrow><mi>n</mi><mo>(</mo><mn>6</mn><mi>n</mi><mo>)</mo></mrow><mn>6</mn></mfrac><mo>=</mo><msup><mi>n</mi><mn>2</mn></msup>.</mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <div class="formula-verdict">The formula begins at zero and adds precisely the next square. The verification theorem therefore certifies it for every n.</div>
+        </div>
+      </details>
+
+      <details open>
+        <summary>Why a cubic answer is expected: the finite-difference evidence and coefficient derivation</summary>
+        <div class="details-body">
+          <p>
+            The totals 0, 1, 5, 14, 30, … have first differences 1, 4, 9, 16, …;
+            second differences 3, 5, 7, …; and third differences constantly 2.
+            Constant third differences are the signature of a cubic polynomial.
+          </p>
+          <div id="differenceTable2" class="table-wrap"></div>
+          <p>
+            The earlier coefficient section derives the cubic exactly. The table here explains why degree three was not an arbitrary guess:
+            each finite difference lowers polynomial degree by one, and three differences turn the total into a constant.
+          </p>
+        </div>
+      </details>
+
+    </section>
+
+    <section class="card" id="cubes">
+      <p class="section-kicker">Part 3</p>
+      <h2>Deriving the sum of the first n cubes</h2>
+
+      <div class="equation big-math">
+        <math display="block" aria-label="the sum from k equals 1 to n of k cubed equals the square of n times n plus 1 over 2">
+          <mrow>
+            <munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msup><mi>k</mi><mn>3</mn></msup>
+            <mo>=</mo>
+            <msup>
+              <mrow><mo>[</mo><mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac><mo>]</mo></mrow>
+              <mn>2</mn>
+            </msup>
+            <mo>=</mo>
+            <mfrac><mrow><msup><mi>n</mi><mn>2</mn></msup><msup><mrow><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup></mrow><mn>4</mn></mfrac>
+          </mrow>
+        </math>
+      </div>
+
+      <div class="insight">
+        <span class="label">The key idea</span>
+        <p>
+          The nth triangular number is the sum one plus two plus up to n. The difference between the squares of two consecutive
+          triangular numbers is exactly n cubed. Adding those differences makes all the middle triangular-number squares cancel.
+        </p>
+      </div>
+
+      <h3>First observe the pattern, then prove it</h3>
+      <div class="table-wrap">
+        <table>
+          <caption>Early cube sums and the matching triangular-number squares</caption>
+          <thead>
+            <tr><th>n</th><th>Cube sum</th><th>Value</th><th>Triangular number</th><th>Its square</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>1³</td><td>1</td><td>1</td><td>1² = 1</td></tr>
+            <tr><td>2</td><td>1³ + 2³</td><td>9</td><td>1 + 2 = 3</td><td>3² = 9</td></tr>
+            <tr><td>3</td><td>1³ + 2³ + 3³</td><td>36</td><td>1 + 2 + 3 = 6</td><td>6² = 36</td></tr>
+            <tr><td>4</td><td>1³ + 2³ + 3³ + 4³</td><td>100</td><td>1 + 2 + 3 + 4 = 10</td><td>10² = 100</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">
+        <span class="label">Important</span>
+        <p>
+          This table suggests that the sum of cubes may equal the square of the sum of the integers.
+          It is not yet a proof. The next identity forces the result for every n.
+        </p>
+      </div>
+
+      <ol class="steps">
+        <li>
+          <h4>Define the kth triangular number</h4>
+          <div class="equation big-math">
+            <math display="block" aria-label="T sub k equals 1 plus 2 up to k equals k times k plus 1 over 2">
+              <mrow>
+                <msub><mi>T</mi><mi>k</mi></msub>
+                <mo>=</mo><mn>1</mn><mo>+</mo><mn>2</mn><mo>+</mo><mo>⋯</mo><mo>+</mo><mi>k</mi>
+                <mo>=</mo><mfrac><mrow><mi>k</mi><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac>
+              </mrow>
+            </math>
+          </div>
+          <p>Also define T zero to be zero, because the sum with no terms is zero.</p>
+        </li>
+
+        <li>
+          <h4>Find the difference between two consecutive triangular numbers</h4>
+          <p>T k contains the terms one through k. T k minus one contains only one through k minus one. Therefore:</p>
+          <div class="equation big-math">
+            <math display="block" aria-label="T sub k minus T sub k minus 1 equals k">
+              <mrow>
+                <msub><mi>T</mi><mi>k</mi></msub>
+                <mo>−</mo>
+                <msub><mi>T</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub>
+                <mo>=</mo><mi>k</mi>
+              </mrow>
+            </math>
+          </div>
+        </li>
+
+        <li>
+          <h4>Find the sum of those two consecutive triangular numbers</h4>
+          <div class="equation">
+            <math display="block" aria-label="T sub k plus T sub k minus 1 equals k squared">
+              <mtable columnalign="right center left">
+                <mtr>
+                  <mtd><msub><mi>T</mi><mi>k</mi></msub><mo>+</mo><msub><mi>T</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub></mtd>
+                  <mtd><mo>=</mo></mtd>
+                  <mtd><mfrac><mrow><mi>k</mi><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac><mo>+</mo><mfrac><mrow><mo>(</mo><mi>k</mi><mo>−</mo><mn>1</mn><mo>)</mo><mi>k</mi></mrow><mn>2</mn></mfrac></mtd>
+                </mtr>
+                <mtr>
+                  <mtd></mtd><mtd><mo>=</mo></mtd>
+                  <mtd><mfrac><mrow><mi>k</mi><mo>[</mo><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>+</mo><mo>(</mo><mi>k</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>]</mo></mrow><mn>2</mn></mfrac></mtd>
+                </mtr>
+                <mtr>
+                  <mtd></mtd><mtd><mo>=</mo></mtd>
+                  <mtd><mfrac><mrow><mi>k</mi><mo>(</mo><mn>2</mn><mi>k</mi><mo>)</mo></mrow><mn>2</mn></mfrac></mtd>
+                </mtr>
+                <mtr>
+                  <mtd></mtd><mtd><mo>=</mo></mtd>
+                  <mtd><msup><mi>k</mi><mn>2</mn></msup></mtd>
+                </mtr>
+              </mtable>
+            </math>
+          </div>
+        </li>
+
+        <li>
+          <h4>Use the difference-of-two-squares identity</h4>
+          <p>For any A and B, multiply the two brackets directly:</p>
+          <div class="equation">
+            <math display="block" aria-label="A minus B times A plus B equals A squared plus AB minus AB minus B squared equals A squared minus B squared">
+              <mtable columnalign="right center left">
+                <mtr>
+                  <mtd><mo>(</mo><mi>A</mi><mo>−</mo><mi>B</mi><mo>)</mo><mo>(</mo><mi>A</mi><mo>+</mo><mi>B</mi><mo>)</mo></mtd>
+                  <mtd><mo>=</mo></mtd>
+                  <mtd><msup><mi>A</mi><mn>2</mn></msup><mo>+</mo><mi>A</mi><mi>B</mi><mo>−</mo><mi>A</mi><mi>B</mi><mo>−</mo><msup><mi>B</mi><mn>2</mn></msup></mtd>
+                </mtr>
+                <mtr>
+                  <mtd></mtd><mtd><mo>=</mo></mtd>
+                  <mtd><msup><mi>A</mi><mn>2</mn></msup><mo>−</mo><msup><mi>B</mi><mn>2</mn></msup></mtd>
+                </mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>Reading that equality from right to left gives the difference-of-two-squares identity:</p>
+          <div class="equation">
+            <math display="block" aria-label="A squared minus B squared equals A minus B times A plus B">
+              <mrow>
+                <msup><mi>A</mi><mn>2</mn></msup><mo>−</mo><msup><mi>B</mi><mn>2</mn></msup>
+                <mo>=</mo><mo>(</mo><mi>A</mi><mo>−</mo><mi>B</mi><mo>)</mo><mo>(</mo><mi>A</mi><mo>+</mo><mi>B</mi><mo>)</mo>
+              </mrow>
+            </math>
+          </div>
+          <p>Set A equal to T k and B equal to T k minus one:</p>
+          <div class="equation big-math">
+            <math display="block" aria-label="T k squared minus T k minus 1 squared equals k times k squared equals k cubed">
+              <mtable columnalign="right center left">
+                <mtr>
+                  <mtd><msup><msub><mi>T</mi><mi>k</mi></msub><mn>2</mn></msup><mo>−</mo><msup><msub><mi>T</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mn>2</mn></msup></mtd>
+                  <mtd><mo>=</mo></mtd>
+                  <mtd><mo>(</mo><msub><mi>T</mi><mi>k</mi></msub><mo>−</mo><msub><mi>T</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>)</mo><mo>(</mo><msub><mi>T</mi><mi>k</mi></msub><mo>+</mo><msub><mi>T</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>)</mo></mtd>
+                </mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mi>k</mi><mo>×</mo><msup><mi>k</mi><mn>2</mn></msup></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><msup><mi>k</mi><mn>3</mn></msup></mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>So we have proved the crucial identity:</p>
+          <div class="equation big-math">
+            <math display="block" aria-label="k cubed equals T k squared minus T k minus 1 squared">
+              <mrow>
+                <msup><mi>k</mi><mn>3</mn></msup>
+                <mo>=</mo>
+                <msup><msub><mi>T</mi><mi>k</mi></msub><mn>2</mn></msup>
+                <mo>−</mo>
+                <msup><msub><mi>T</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mn>2</mn></msup>
+              </mrow>
+            </math>
+          </div>
+        </li>
+
+        <li>
+          <h4>Add the identity from k equals one to k equals n</h4>
+          <div class="cancel-demo" aria-label="telescoping triangular number squares">
+            (<span class="cancelled">T₁²</span> − <span class="survivor">T₀²</span>) +
+            (<span class="cancelled">T₂²</span> − <span class="cancelled">T₁²</span>) +
+            (<span class="cancelled">T₃²</span> − <span class="cancelled">T₂²</span>) + ··· +
+            (<span class="survivor">Tₙ²</span> − <span class="cancelled">Tₙ₋₁²</span>)
+          </div>
+          <p>
+            Every internal triangular square appears once positively and once negatively, so it cancels.
+            The surviving terms are T n squared and minus T zero squared. Since T zero is zero:
+          </p>
+          <div class="equation big-math">
+            <math display="block" aria-label="the sum of k cubed equals T n squared">
+              <mrow>
+                <munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msup><mi>k</mi><mn>3</mn></msup>
+                <mo>=</mo><msup><msub><mi>T</mi><mi>n</mi></msub><mn>2</mn></msup>
+              </mrow>
+            </math>
+          </div>
+        </li>
+
+        <li>
+          <h4>Substitute the formula for the nth triangular number</h4>
+          <div class="equation big-math">
+            <math display="block" aria-label="the sum of k cubed equals the square of n times n plus 1 over 2">
+              <mrow>
+                <munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msup><mi>k</mi><mn>3</mn></msup>
+                <mo>=</mo>
+                <msup>
+                  <mrow><mo>[</mo><mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac><mo>]</mo></mrow>
+                  <mn>2</mn>
+                </msup>
+              </mrow>
+            </math>
+          </div>
+          <p>This is the required cube-sum formula.</p>
+        </li>
+      </ol>
+
+      <details open>
+        <summary>Interactive table: each cube as a difference of triangular squares</summary>
+        <div class="details-body">
+          <div id="cubeIdentityTable" class="table-wrap"></div>
+        </div>
+      </details>
+
+      <details open>
+        <summary>Interactive pattern table for the cumulative cube sums</summary>
+        <div class="details-body">
+          <div id="cubePatternTable" class="table-wrap"></div>
+        </div>
+      </details>
+
+      <details open>
+        <summary>How someone can discover the cube-sum formula using coefficients</summary>
+        <div class="details-body">
+          <p>
+            Because the new term is n cubed, a degree-four total is natural. Start with the most general quartic whose value at zero is zero:
+          </p>
+          <div class="equation">
+            <math display="block" aria-label="S 3 of n equals a n to the fourth plus b n cubed plus c n squared plus d n">
+              <mrow>
+                <msub><mi>S</mi><mn>3</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo>
+                <mo>=</mo><mi>a</mi><msup><mi>n</mi><mn>4</mn></msup><mo>+</mo><mi>b</mi><msup><mi>n</mi><mn>3</mn></msup><mo>+</mo><mi>c</mi><msup><mi>n</mi><mn>2</mn></msup><mo>+</mo><mi>d</mi><mi>n</mi>
+              </mrow>
+            </math>
+          </div>
+          <p>Require its consecutive difference to equal n cubed:</p>
+          <div class="equation">
+            <math display="block" aria-label="S 3 of n minus S 3 of n minus 1 equals n cubed">
+              <mrow>
+                <msub><mi>S</mi><mn>3</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo><mo>−</mo>
+                <msub><mi>S</mi><mn>3</mn></msub><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo>
+                <mo>=</mo><msup><mi>n</mi><mn>3</mn></msup>
+              </mrow>
+            </math>
+          </div>
+          <p>First calculate the required consecutive-power differences:</p>
+          <div class="equation">
+            <math display="block" aria-label="consecutive differences of the fourth, third, second and first powers">
+              <mtable columnalign="left">
+                <mtr>
+                  <mtd>
+                    <msup><mi>n</mi><mn>4</mn></msup><mo>−</mo><msup><mrow><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mn>4</mn></msup>
+                    <mo>=</mo><mn>4</mn><msup><mi>n</mi><mn>3</mn></msup><mo>−</mo><mn>6</mn><msup><mi>n</mi><mn>2</mn></msup><mo>+</mo><mn>4</mn><mi>n</mi><mo>−</mo><mn>1</mn>
+                  </mtd>
+                </mtr>
+                <mtr>
+                  <mtd>
+                    <msup><mi>n</mi><mn>3</mn></msup><mo>−</mo><msup><mrow><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mn>3</mn></msup>
+                    <mo>=</mo><mn>3</mn><msup><mi>n</mi><mn>2</mn></msup><mo>−</mo><mn>3</mn><mi>n</mi><mo>+</mo><mn>1</mn>
+                  </mtd>
+                </mtr>
+                <mtr>
+                  <mtd>
+                    <msup><mi>n</mi><mn>2</mn></msup><mo>−</mo><msup><mrow><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup>
+                    <mo>=</mo><mn>2</mn><mi>n</mi><mo>−</mo><mn>1</mn>
+                  </mtd>
+                </mtr>
+                <mtr>
+                  <mtd><mi>n</mi><mo>−</mo><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>=</mo><mn>1</mn></mtd>
+                </mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>Substituting those four differences into the proposed quartic gives</p>
+          <div class="equation">
+            <math display="block" aria-label="the consecutive difference of the quartic equals 4a n cubed plus negative 6a plus 3b n squared plus 4a minus 3b plus 2c n plus negative a plus b minus c plus d">
+              <mrow>
+                <mn>4</mn><mi>a</mi><msup><mi>n</mi><mn>3</mn></msup>
+                <mo>+</mo><mo>(</mo><mo>−</mo><mn>6</mn><mi>a</mi><mo>+</mo><mn>3</mn><mi>b</mi><mo>)</mo><msup><mi>n</mi><mn>2</mn></msup>
+                <mo>+</mo><mo>(</mo><mn>4</mn><mi>a</mi><mo>−</mo><mn>3</mn><mi>b</mi><mo>+</mo><mn>2</mn><mi>c</mi><mo>)</mo><mi>n</mi>
+                <mo>+</mo><mo>(</mo><mo>−</mo><mi>a</mi><mo>+</mo><mi>b</mi><mo>−</mo><mi>c</mi><mo>+</mo><mi>d</mi><mo>)</mo>
+                <mo>=</mo><msup><mi>n</mi><mn>3</mn></msup>
+              </mrow>
+            </math>
+          </div>
+          <p>
+            Matching the coefficient of n cubed, then n squared, then n, then the constant term gives four equations:
+          </p>
+          <div class="equation">
+            <math display="block" aria-label="4a equals 1, negative 6a plus 3b equals 0, 4a minus 3b plus 2c equals 0, negative a plus b minus c plus d equals 0">
+              <mtable columnalign="right center left">
+                <mtr><mtd><mn>4</mn><mi>a</mi></mtd><mtd><mo>=</mo></mtd><mtd><mn>1</mn></mtd></mtr>
+                <mtr><mtd><mo>−</mo><mn>6</mn><mi>a</mi><mo>+</mo><mn>3</mn><mi>b</mi></mtd><mtd><mo>=</mo></mtd><mtd><mn>0</mn></mtd></mtr>
+                <mtr><mtd><mn>4</mn><mi>a</mi><mo>−</mo><mn>3</mn><mi>b</mi><mo>+</mo><mn>2</mn><mi>c</mi></mtd><mtd><mo>=</mo></mtd><mtd><mn>0</mn></mtd></mtr>
+                <mtr><mtd><mo>−</mo><mi>a</mi><mo>+</mo><mi>b</mi><mo>−</mo><mi>c</mi><mo>+</mo><mi>d</mi></mtd><mtd><mo>=</mo></mtd><mtd><mn>0</mn></mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>Solve them in order:</p>
+          <div class="equation">
+            <math display="block" aria-label="step by step solution for a b c and d">
+              <mtable columnalign="left">
+                <mtr><mtd><mn>4</mn><mi>a</mi><mo>=</mo><mn>1</mn><mo>⇒</mo><mi>a</mi><mo>=</mo><mfrac><mn>1</mn><mn>4</mn></mfrac></mtd></mtr>
+                <mtr><mtd><mo>−</mo><mn>6</mn><mo>(</mo><mfrac><mn>1</mn><mn>4</mn></mfrac><mo>)</mo><mo>+</mo><mn>3</mn><mi>b</mi><mo>=</mo><mn>0</mn><mo>⇒</mo><mi>b</mi><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></mtd></mtr>
+                <mtr><mtd><mn>4</mn><mo>(</mo><mfrac><mn>1</mn><mn>4</mn></mfrac><mo>)</mo><mo>−</mo><mn>3</mn><mo>(</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>)</mo><mo>+</mo><mn>2</mn><mi>c</mi><mo>=</mo><mn>0</mn><mo>⇒</mo><mi>c</mi><mo>=</mo><mfrac><mn>1</mn><mn>4</mn></mfrac></mtd></mtr>
+                <mtr><mtd><mo>−</mo><mfrac><mn>1</mn><mn>4</mn></mfrac><mo>+</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>−</mo><mfrac><mn>1</mn><mn>4</mn></mfrac><mo>+</mo><mi>d</mi><mo>=</mo><mn>0</mn><mo>⇒</mo><mi>d</mi><mo>=</mo><mn>0</mn></mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>The solution is</p>
+          <div class="equation">
+            <math display="block" aria-label="a equals one quarter, b equals one half, c equals one quarter, d equals zero">
+              <mrow>
+                <mi>a</mi><mo>=</mo><mfrac><mn>1</mn><mn>4</mn></mfrac><mo>,</mo>
+                <mspace width="1em"></mspace><mi>b</mi><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>,</mo>
+                <mspace width="1em"></mspace><mi>c</mi><mo>=</mo><mfrac><mn>1</mn><mn>4</mn></mfrac><mo>,</mo>
+                <mspace width="1em"></mspace><mi>d</mi><mo>=</mo><mn>0</mn>
+              </mrow>
+            </math>
+          </div>
+          <div class="equation">
+            <math display="block" aria-label="S 3 of n equals one quarter n to the fourth plus one half n cubed plus one quarter n squared equals one quarter n squared times n plus 1 squared">
+              <mtable columnalign="right center left">
+                <mtr>
+                  <mtd><msub><mi>S</mi><mn>3</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo></mtd><mtd><mo>=</mo></mtd>
+                  <mtd><mfrac><msup><mi>n</mi><mn>4</mn></msup><mn>4</mn></mfrac><mo>+</mo><mfrac><msup><mi>n</mi><mn>3</mn></msup><mn>2</mn></mfrac><mo>+</mo><mfrac><msup><mi>n</mi><mn>2</mn></msup><mn>4</mn></mfrac></mtd>
+                </mtr>
+                <mtr>
+                  <mtd></mtd><mtd><mo>=</mo></mtd>
+                  <mtd><mfrac><mrow><msup><mi>n</mi><mn>2</mn></msup><mo>(</mo><msup><mi>n</mi><mn>2</mn></msup><mo>+</mo><mn>2</mn><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>4</mn></mfrac></mtd>
+                </mtr>
+                <mtr>
+                  <mtd></mtd><mtd><mo>=</mo></mtd>
+                  <mtd><mfrac><mrow><msup><mi>n</mi><mn>2</mn></msup><msup><mrow><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup></mrow><mn>4</mn></mfrac></mtd>
+                </mtr>
+              </mtable>
+            </math>
+          </div>
+        </div>
+      </details>
+
+      <details open>
+        <summary>Worked example with n = 4</summary>
+        <div class="details-body">
+          <p>Direct addition:</p>
+          <div class="equation compact">
+            <math display="block" aria-label="1 cubed plus 2 cubed plus 3 cubed plus 4 cubed equals 1 plus 8 plus 27 plus 64 equals 100">
+              <mrow>
+                <msup><mn>1</mn><mn>3</mn></msup><mo>+</mo><msup><mn>2</mn><mn>3</mn></msup><mo>+</mo><msup><mn>3</mn><mn>3</mn></msup><mo>+</mo><msup><mn>4</mn><mn>3</mn></msup>
+                <mo>=</mo><mn>1</mn><mo>+</mo><mn>8</mn><mo>+</mo><mn>27</mn><mo>+</mo><mn>64</mn><mo>=</mo><mn>100</mn>
+              </mrow>
+            </math>
+          </div>
+          <p>Formula:</p>
+          <div class="equation compact">
+            <math display="block" aria-label="the square of 4 times 5 over 2 equals 10 squared equals 100">
+              <mrow>
+                <msup><mrow><mo>[</mo><mfrac><mrow><mn>4</mn><mo>×</mo><mn>5</mn></mrow><mn>2</mn></mfrac><mo>]</mo></mrow><mn>2</mn></msup>
+                <mo>=</mo><msup><mn>10</mn><mn>2</mn></msup><mo>=</mo><mn>100</mn>
+              </mrow>
+            </math>
+          </div>
+        </div>
+      </details>
+
+
+      <details open>
+        <summary>Visual proof: cube terms are non-overlapping L-shaped layers inside one large square</summary>
+        <div class="details-body">
+          <p>
+            Let T<sub>k</sub> = 1 + 2 + ··· + k. Draw a square whose side is T<sub>k−1</sub>, then enlarge it to a square whose side is T<sub>k</sub>.
+            The side grows by exactly k because T<sub>k</sub> − T<sub>k−1</sub> = k.
+          </p>
+          <p>
+            The newly added L-shaped region can be split without overlap into a right rectangle of width k and height T<sub>k</sub>,
+            plus a bottom rectangle of height k and width T<sub>k−1</sub>. Its area is therefore
+          </p>
+          <div class="equation big-math">
+            <math display="block" aria-label="k T k plus k T k minus 1 equals k times T k plus T k minus 1 equals k cubed">
+              <mrow><mi>k</mi><msub><mi>T</mi><mi>k</mi></msub><mo>+</mo><mi>k</mi><msub><mi>T</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>k</mi><mo>(</mo><msub><mi>T</mi><mi>k</mi></msub><mo>+</mo><msub><mi>T</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>)</mo><mo>=</mo><mi>k</mi><mo>×</mo><msup><mi>k</mi><mn>2</mn></msup><mo>=</mo><msup><mi>k</mi><mn>3</mn></msup>.</mrow>
+            </math>
+          </div>
+
+          <div class="visual-controls">
+            <label for="cubeLayerRange">Highlight layer k:</label>
+            <input id="cubeLayerRange" type="range" min="1" max="6" value="4" step="1">
+            <span id="cubeLayerLabel" class="proof-status pass">k = 4</span>
+          </div>
+          <div class="svg-stage">
+            <svg id="cubeGnomonSvg" viewBox="0 0 620 620" role="img" aria-label="Nested triangular-number squares whose L-shaped layers have cube-number areas"></svg>
+          </div>
+          <div id="cubeLayerReadout" class="layer-readout"></div>
+          <p id="cubeVisualNote" class="small centred"></p>
+
+          <p>
+            The layers for k = 1, 2, …, n do not overlap, and together they exactly fill the final T<sub>n</sub>-by-T<sub>n</sub> square.
+            Hence the area of the large square is both T<sub>n</sub>² and 1³ + 2³ + ··· + n³. This is the geometric content of the telescoping proof.
+          </p>
+        </div>
+      </details>
+
+      <details open>
+        <summary>An independent algebraic derivation from consecutive fourth powers</summary>
+        <div class="details-body">
+          <p>
+            This route does not use triangular-number squares. It uses the already proved formulas for first powers and squares,
+            showing that the cube formula also emerges from the same telescoping ladder.
+          </p>
+          <p>Expand (k − 1)⁴:</p>
+          <div class="equation">
+            <math display="block" aria-label="k to the fourth minus k minus 1 to the fourth equals 4k cubed minus 6k squared plus 4k minus 1">
+              <mrow><msup><mi>k</mi><mn>4</mn></msup><mo>−</mo><msup><mrow><mo>(</mo><mi>k</mi><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mn>4</mn></msup><mo>=</mo><mn>4</mn><msup><mi>k</mi><mn>3</mn></msup><mo>−</mo><mn>6</mn><msup><mi>k</mi><mn>2</mn></msup><mo>+</mo><mn>4</mn><mi>k</mi><mo>−</mo><mn>1</mn>.</mrow>
+            </math>
+          </div>
+          <p>Sum from k = 1 to n. The left side telescopes to n⁴:</p>
+          <div class="equation">
+            <math display="block" aria-label="n to the fourth equals 4 S three minus 6 S two plus 4 S one minus n">
+              <mrow><msup><mi>n</mi><mn>4</mn></msup><mo>=</mo><mn>4</mn><msub><mi>S</mi><mn>3</mn></msub><mo>−</mo><mn>6</mn><msub><mi>S</mi><mn>2</mn></msub><mo>+</mo><mn>4</mn><msub><mi>S</mi><mn>1</mn></msub><mo>−</mo><mi>n</mi>.</mrow>
+            </math>
+          </div>
+          <p>Isolate 4S<sub>3</sub> and insert the earlier formulas:</p>
+          <div class="equation">
+            <math display="block" aria-label="4 S three equals n fourth plus n n plus 1 2n plus 1 minus 2n n plus 1 plus n">
+              <mtable columnalign="right center left">
+                <mtr><mtd><mn>4</mn><msub><mi>S</mi><mn>3</mn></msub></mtd><mtd><mo>=</mo></mtd><mtd><msup><mi>n</mi><mn>4</mn></msup><mo>+</mo><mn>6</mn><msub><mi>S</mi><mn>2</mn></msub><mo>−</mo><mn>4</mn><msub><mi>S</mi><mn>1</mn></msub><mo>+</mo><mi>n</mi></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><msup><mi>n</mi><mn>4</mn></msup><mo>+</mo><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mn>2</mn><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>−</mo><mn>2</mn><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>+</mo><mi>n</mi></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><msup><mi>n</mi><mn>4</mn></msup><mo>+</mo><mn>2</mn><msup><mi>n</mi><mn>3</mn></msup><mo>+</mo><msup><mi>n</mi><mn>2</mn></msup></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><msup><mi>n</mi><mn>2</mn></msup><msup><mrow><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup>.</mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>Divide by 4:</p>
+          <div class="equation big-math">
+            <math display="block" aria-label="S three equals n squared n plus 1 squared over 4">
+              <mrow><msub><mi>S</mi><mn>3</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo><mo>=</mo><mfrac><mrow><msup><mi>n</mi><mn>2</mn></msup><msup><mrow><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup></mrow><mn>4</mn></mfrac>.</mrow>
+            </math>
+          </div>
+        </div>
+      </details>
+
+      <details open>
+        <summary>Rigour certificate: the proposed cube formula gains exactly n³</summary>
+        <div class="details-body">
+          <p>Let</p>
+          <div class="equation compact">
+            <math display="block" aria-label="F three n equals n squared n plus 1 squared over 4">
+              <mrow><msub><mi>F</mi><mn>3</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo><mo>=</mo><mfrac><mrow><msup><mi>n</mi><mn>2</mn></msup><msup><mrow><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup></mrow><mn>4</mn></mfrac>.</mrow>
+            </math>
+          </div>
+          <p>F<sub>3</sub>(0) = 0. For n ≥ 1:</p>
+          <div class="equation">
+            <math display="block" aria-label="F three n minus F three n minus one equals n cubed">
+              <mtable columnalign="right center left">
+                <mtr><mtd><msub><mi>F</mi><mn>3</mn></msub><mo>(</mo><mi>n</mi><mo>)</mo><mo>−</mo><msub><mi>F</mi><mn>3</mn></msub><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo></mtd><mtd><mo>=</mo></mtd><mtd><mfrac><mrow><msup><mi>n</mi><mn>2</mn></msup><mo>[</mo><msup><mrow><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup><mo>−</mo><msup><mrow><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup><mo>]</mo></mrow><mn>4</mn></mfrac></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mfrac><mrow><msup><mi>n</mi><mn>2</mn></msup><mo>[</mo><mo>(</mo><mn>2</mn><mo>)</mo><mo>(</mo><mn>2</mn><mi>n</mi><mo>)</mo><mo>]</mo></mrow><mn>4</mn></mfrac></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><msup><mi>n</mi><mn>3</mn></msup>.</mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>The middle line uses a² − b² = (a − b)(a + b), with a = n + 1 and b = n − 1.</p>
+          <div class="formula-verdict">The candidate begins at zero and gains the next cube exactly. It is therefore the cube sum for every n.</div>
+        </div>
+      </details>
+
+      <details open>
+        <summary>Why a quartic answer is expected: finite differences</summary>
+        <div class="details-body">
+          <p>
+            Cube-sum totals have cubes as first differences. Cubes have constant third differences, so the totals have constant fourth differences.
+            A polynomial with constant fourth difference has degree four, matching the expanded formula n²(n + 1)²/4.
+          </p>
+          <div id="differenceTable3" class="table-wrap"></div>
+        </div>
+      </details>
+
+    </section>
+
+
+
+    <section class="card" id="systematic-origin">
+      <p class="section-kicker">The deeper origin</p>
+      <h2>A systematic machine that produces these formulas instead of guessing them</h2>
+      <p class="lead">
+        Pairing and geometric insight are elegant, but there is also a repeatable algebraic method.
+        It is the finite-sum version of finding an expression whose consecutive difference is the term we want to add.
+      </p>
+
+      <div class="theorem">
+        <span class="theorem-title">Discrete antiderivative principle</span>
+        To sum a sequence a<sub>k</sub>, look for an expression A(k) such that A(k) − A(k − 1) = a<sub>k</sub>.
+        Then the sum from k = 1 to n is A(n) − A(0), because all middle values telescope.
+      </div>
+
+      <div class="formula-grid">
+        <article class="formula-card">
+          <p class="name">Term k</p>
+          <p>One possible antiderivative is A(k) = k(k + 1)/2.</p>
+          <div class="identity-chip">A(k) − A(k−1) = k</div>
+        </article>
+        <article class="formula-card">
+          <p class="name">Term k²</p>
+          <p>One possible antiderivative is A(k) = k(k + 1)(2k + 1)/6.</p>
+          <div class="identity-chip">A(k) − A(k−1) = k²</div>
+        </article>
+        <article class="formula-card">
+          <p class="name">Term k³</p>
+          <p>One possible antiderivative is A(k) = [k(k + 1)/2]².</p>
+          <div class="identity-chip">A(k) − A(k−1) = k³</div>
+        </article>
+      </div>
+
+      <details open>
+        <summary>Why finite differences predict the degrees 2, 3 and 4</summary>
+        <div class="details-body">
+          <p>Define the backward difference of F by ΔF(n) = F(n) − F(n − 1). Direct expansion shows:</p>
+          <div class="equation">
+            <math display="block" aria-label="differences lower polynomial degree">
+              <mtable columnalign="left">
+                <mtr><mtd><mi>Δ</mi><mo>(</mo><mi>n</mi><mo>)</mo><mo>=</mo><mn>1</mn></mtd></mtr>
+                <mtr><mtd><mi>Δ</mi><mo>(</mo><msup><mi>n</mi><mn>2</mn></msup><mo>)</mo><mo>=</mo><mn>2</mn><mi>n</mi><mo>−</mo><mn>1</mn></mtd></mtr>
+                <mtr><mtd><mi>Δ</mi><mo>(</mo><msup><mi>n</mi><mn>3</mn></msup><mo>)</mo><mo>=</mo><mn>3</mn><msup><mi>n</mi><mn>2</mn></msup><mo>−</mo><mn>3</mn><mi>n</mi><mo>+</mo><mn>1</mn></mtd></mtr>
+                <mtr><mtd><mi>Δ</mi><mo>(</mo><msup><mi>n</mi><mn>4</mn></msup><mo>)</mo><mo>=</mo><mn>4</mn><msup><mi>n</mi><mn>3</mn></msup><mo>−</mo><mn>6</mn><msup><mi>n</mi><mn>2</mn></msup><mo>+</mo><mn>4</mn><mi>n</mi><mo>−</mo><mn>1</mn></mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>
+            Each difference lowers the highest power by one. Therefore, to obtain k, k² and k³ as increments,
+            we naturally search one degree higher: quadratic, cubic and quartic running totals.
+          </p>
+        </div>
+      </details>
+
+      <details open>
+        <summary>A completely systematic derivation using binomial coefficients and Pascal's identity</summary>
+        <div class="details-body">
+          <p>
+            This method is optional, but it answers the strongest version of “where did the formulas come from?”:
+            it converts powers into building blocks whose sums telescope automatically.
+          </p>
+
+          <h3>Step 1: define the building blocks</h3>
+          <p>
+            The binomial coefficient “m choose r”, written C(m,r), counts selections of r objects from m objects, where 0 ≤ r ≤ m.
+            There are m(m − 1)···(m − r + 1) ordered ways to choose r distinct objects, but every unordered selection is counted once for each of its r! possible orders.
+            Dividing by r! therefore gives
+          </p>
+          <div class="equation compact">
+            <math display="block" aria-label="m choose r equals m factorial over r factorial m minus r factorial">
+              <mrow><mi>C</mi><mo>(</mo><mi>m</mi><mo>,</mo><mi>r</mi><mo>)</mo><mo>=</mo><mfrac><mrow><mi>m</mi><mo>!</mo></mrow><mrow><mi>r</mi><mo>!</mo><mo>(</mo><mi>m</mi><mo>−</mo><mi>r</mi><mo>)</mo><mo>!</mo></mrow></mfrac>.</mrow>
+            </math>
+          </div>
+          <p>
+            Here m! means m(m − 1)···2·1, and 0! is defined as 1. We also set C(m,r) = 0 when r is outside 0 ≤ r ≤ m;
+            that convention lets later sums start at k = 1 without special cases.
+          </p>
+          <p>The first rows of Pascal's triangle are generated below:</p>
+          <div id="pascalTriangle" class="pascal" aria-label="Pascal triangle"></div>
+
+          <h3>Step 2: prove Pascal's identity</h3>
+          <p>
+            To choose r objects from k + 1 objects, single out one special object. A selection either excludes it,
+            giving C(k,r) choices, or includes it, leaving r − 1 choices from the other k objects, giving C(k,r − 1) choices.
+            The two cases are disjoint and exhaustive, so
+          </p>
+          <div class="equation big-math">
+            <math display="block" aria-label="C k plus 1 r equals C k r plus C k r minus 1">
+              <mrow><mi>C</mi><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>r</mi><mo>)</mo><mo>=</mo><mi>C</mi><mo>(</mo><mi>k</mi><mo>,</mo><mi>r</mi><mo>)</mo><mo>+</mo><mi>C</mi><mo>(</mo><mi>k</mi><mo>,</mo><mi>r</mi><mo>−</mo><mn>1</mn><mo>)</mo>.</mrow>
+            </math>
+          </div>
+          <p>Rearrange it into a consecutive-difference identity:</p>
+          <div class="equation">
+            <math display="block" aria-label="C k r minus 1 equals C k plus 1 r minus C k r">
+              <mrow><mi>C</mi><mo>(</mo><mi>k</mi><mo>,</mo><mi>r</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>=</mo><mi>C</mi><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>r</mi><mo>)</mo><mo>−</mo><mi>C</mi><mo>(</mo><mi>k</mi><mo>,</mo><mi>r</mi><mo>)</mo>.</mrow>
+            </math>
+          </div>
+          <p>Summing from k = r − 1 through n makes the right side telescope:</p>
+          <div class="equation">
+            <math display="block" aria-label="hockey stick identity">
+              <mtable columnalign="right center left">
+                <mtr><mtd><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mi>r</mi><mo>−</mo><mn>1</mn></mrow><mi>n</mi></munderover><mi>C</mi><mo>(</mo><mi>k</mi><mo>,</mo><mi>r</mi><mo>−</mo><mn>1</mn><mo>)</mo></mtd><mtd><mo>=</mo></mtd><mtd><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mi>r</mi><mo>−</mo><mn>1</mn></mrow><mi>n</mi></munderover><mo>[</mo><mi>C</mi><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>r</mi><mo>)</mo><mo>−</mo><mi>C</mi><mo>(</mo><mi>k</mi><mo>,</mo><mi>r</mi><mo>)</mo><mo>]</mo></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mi>C</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>r</mi><mo>)</mo><mo>−</mo><mi>C</mi><mo>(</mo><mi>r</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>r</mi><mo>)</mo></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mi>C</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>r</mi><mo>)</mo>,</mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>The final subtracted term is zero because one cannot choose r objects from only r − 1 objects. The particular cases needed below are:</p>
+          <div class="identity-strip">
+            <span class="identity-chip">Σ<sub>k=1</sub><sup>n</sup> C(k,1) = C(n+1,2)</span>
+            <span class="identity-chip">Σ<sub>k=1</sub><sup>n</sup> C(k,2) = C(n+1,3)</span>
+            <span class="identity-chip">Σ<sub>k=1</sub><sup>n</sup> C(k,3) = C(n+1,4)</span>
+          </div>
+
+          <h3>Step 3: rewrite ordinary powers in these blocks</h3>
+          <div class="equation">
+            <math display="block" aria-label="power identities in binomial coefficients">
+              <mtable columnalign="left">
+                <mtr><mtd><mi>k</mi><mo>=</mo><mi>C</mi><mo>(</mo><mi>k</mi><mo>,</mo><mn>1</mn><mo>)</mo></mtd></mtr>
+                <mtr><mtd><msup><mi>k</mi><mn>2</mn></msup><mo>=</mo><mn>2</mn><mi>C</mi><mo>(</mo><mi>k</mi><mo>,</mo><mn>2</mn><mo>)</mo><mo>+</mo><mi>C</mi><mo>(</mo><mi>k</mi><mo>,</mo><mn>1</mn><mo>)</mo></mtd></mtr>
+                <mtr><mtd><msup><mi>k</mi><mn>3</mn></msup><mo>=</mo><mn>6</mn><mi>C</mi><mo>(</mo><mi>k</mi><mo>,</mo><mn>3</mn><mo>)</mo><mo>+</mo><mn>6</mn><mi>C</mi><mo>(</mo><mi>k</mi><mo>,</mo><mn>2</mn><mo>)</mo><mo>+</mo><mi>C</mi><mo>(</mo><mi>k</mi><mo>,</mo><mn>1</mn><mo>)</mo></mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>These are exact. For example, the square identity expands to k(k − 1) + k = k². The cube identity expands to</p>
+          <div class="equation compact">
+            <math display="block" aria-label="k k minus 1 k minus 2 plus 3k k minus 1 plus k equals k cubed">
+              <mrow><mi>k</mi><mo>(</mo><mi>k</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>(</mo><mi>k</mi><mo>−</mo><mn>2</mn><mo>)</mo><mo>+</mo><mn>3</mn><mi>k</mi><mo>(</mo><mi>k</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>+</mo><mi>k</mi><mo>=</mo><msup><mi>k</mi><mn>3</mn></msup>.</mrow>
+            </math>
+          </div>
+
+          <h3>Step 4: sum each building block</h3>
+          <div class="equation">
+            <math display="block" aria-label="systematic derivation of all three sums">
+              <mtable columnalign="left">
+                <mtr><mtd><msub><mi>S</mi><mn>1</mn></msub><mo>=</mo><mi>C</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>)</mo><mo>=</mo><mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac></mtd></mtr>
+                <mtr><mtd><msub><mi>S</mi><mn>2</mn></msub><mo>=</mo><mn>2</mn><mi>C</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>,</mo><mn>3</mn><mo>)</mo><mo>+</mo><mi>C</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>)</mo><mo>=</mo><mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mn>2</mn><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>6</mn></mfrac></mtd></mtr>
+                <mtr><mtd><msub><mi>S</mi><mn>3</mn></msub><mo>=</mo><mn>6</mn><mi>C</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>,</mo><mn>4</mn><mo>)</mo><mo>+</mo><mn>6</mn><mi>C</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>,</mo><mn>3</mn><mo>)</mo><mo>+</mo><mi>C</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>)</mo><mo>=</mo><mfrac><mrow><msup><mi>n</mi><mn>2</mn></msup><msup><mrow><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup></mrow><mn>4</mn></mfrac></mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <h3>Step 5: show the final simplifications rather than hiding them</h3>
+          <p>For the square sum:</p>
+          <div class="equation">
+            <math display="block" aria-label="binomial coefficient simplification for the square sum">
+              <mtable columnalign="right center left">
+                <mtr><mtd><mn>2</mn><mi>C</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>,</mo><mn>3</mn><mo>)</mo><mo>+</mo><mi>C</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>)</mo></mtd><mtd><mo>=</mo></mtd><mtd><mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mn>3</mn></mfrac><mo>+</mo><mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>[</mo><mfrac><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow><mn>3</mn></mfrac><mo>+</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>]</mo></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mfrac><mrow><mn>2</mn><mi>n</mi><mo>−</mo><mn>2</mn><mo>+</mo><mn>3</mn></mrow><mn>6</mn></mfrac></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mn>2</mn><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>6</mn></mfrac>.</mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>For the cube sum:</p>
+          <div class="equation">
+            <math display="block" aria-label="binomial coefficient simplification for the cube sum">
+              <mtable columnalign="right center left">
+                <mtr><mtd><mn>6</mn><mi>C</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>,</mo><mn>4</mn><mo>)</mo><mo>+</mo><mn>6</mn><mi>C</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>,</mo><mn>3</mn><mo>)</mo><mo>+</mo><mi>C</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>)</mo></mtd><mtd><mo>=</mo></mtd><mtd><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>[</mo><mfrac><mrow><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>(</mo><mi>n</mi><mo>−</mo><mn>2</mn><mo>)</mo></mrow><mn>4</mn></mfrac><mo>+</mo><mo>(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>+</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>]</mo></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mfrac><mrow><mo>(</mo><msup><mi>n</mi><mn>2</mn></msup><mo>−</mo><mn>3</mn><mi>n</mi><mo>+</mo><mn>2</mn><mo>)</mo><mo>+</mo><mo>(</mo><mn>4</mn><mi>n</mi><mo>−</mo><mn>4</mn><mo>)</mo><mo>+</mo><mn>2</mn></mrow><mn>4</mn></mfrac></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mfrac><mrow><msup><mi>n</mi><mn>2</mn></msup><mo>+</mo><mi>n</mi></mrow><mn>4</mn></mfrac></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mfrac><mrow><msup><mi>n</mi><mn>2</mn></msup><msup><mrow><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup></mrow><mn>4</mn></mfrac>.</mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <div class="formula-verdict">
+            This method is algorithmic: rewrite powers in a basis with known telescoping differences, sum those pieces, and simplify. It explains how the formulas can be generated rather than merely guessed from a table.
+          </div>
+        </div>
+      </details>
+    </section>
+
+
+    <section class="card" id="induction">
+      <p class="section-kicker">Independent verification</p>
+      <h2>Why mathematical induction proves a formula for every n</h2>
+      <p class="lead">
+        The derivations above already establish the formulas. Induction gives a second, independent check and is especially useful
+        for proving a formula once a plausible expression has been discovered.
+      </p>
+
+      <div class="definition">
+        <span class="label">The induction principle</span>
+        <p>
+          Imagine an infinite row of dominoes. First show the first domino falls. Then show that whenever domino k falls,
+          it forces domino k plus one to fall. Those two facts force every domino to fall. In mathematics:
+        </p>
+        <ol>
+          <li>Prove the statement for n equals one: the <strong>base case</strong>.</li>
+          <li>Assume it is true for an arbitrary n equals k: the <strong>inductive hypothesis</strong>.</li>
+          <li>Use that assumption to prove it for n equals k plus one: the <strong>inductive step</strong>.</li>
+        </ol>
+      </div>
+
+      <details open>
+        <summary>Why the induction principle is logically valid, not merely a domino picture</summary>
+        <div class="details-body">
+          <p>
+            Suppose the base case is true and the k-to-k-plus-one implication is true, but imagine that some positive integer still fails.
+            By the well-ordering property of whole numbers, there would be a <em>smallest</em> failing integer m.
+          </p>
+          <p>
+            The base case is true, so m cannot be 1. Therefore m − 1 is a positive integer smaller than m. Since m was chosen as the smallest failure,
+            the statement must be true at m − 1. The inductive implication then forces it to be true at m, contradicting the choice of m.
+            Hence no failure exists, and the statement is true for every positive integer.
+          </p>
+          <div class="why-step"><strong>Logical ingredients:</strong> a valid base case, a genuinely arbitrary k, and an implication that proves k + 1 from the assumption at k.</div>
+        </div>
+      </details>
+
+
+      <details open>
+        <summary>Induction check for the first-power formula</summary>
+        <div class="details-body">
+          <p><strong>Base case, n equals one:</strong></p>
+          <div class="equation compact">
+            <math display="block" aria-label="1 equals 1 times 2 over 2 equals 1">
+              <mrow><mn>1</mn><mo>=</mo><mfrac><mrow><mn>1</mn><mo>×</mo><mn>2</mn></mrow><mn>2</mn></mfrac><mo>=</mo><mn>1</mn></mrow>
+            </math>
+          </div>
+          <p><strong>Inductive hypothesis:</strong> suppose</p>
+          <div class="equation compact">
+            <math display="block" aria-label="1 plus 2 up to k equals k times k plus 1 over 2">
+              <mrow><mn>1</mn><mo>+</mo><mn>2</mn><mo>+</mo><mo>⋯</mo><mo>+</mo><mi>k</mi><mo>=</mo><mfrac><mrow><mi>k</mi><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac></mrow>
+            </math>
+          </div>
+          <p>Add the next term, k plus one:</p>
+          <div class="equation">
+            <math display="block" aria-label="k times k plus 1 over 2 plus k plus 1 equals k plus 1 times k plus 2 over 2">
+              <mtable columnalign="right center left">
+                <mtr><mtd><mfrac><mrow><mi>k</mi><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac><mo>+</mo><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mtd><mtd><mo>=</mo></mtd><mtd><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mfrac><mi>k</mi><mn>2</mn></mfrac><mo>+</mo><mn>1</mn><mo>)</mo></mtd></mtr>
+                <mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mfrac><mrow><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mi>k</mi><mo>+</mo><mn>2</mn><mo>)</mo></mrow><mn>2</mn></mfrac></mtd></mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>This is exactly the original formula with n replaced by k plus one.</p>
+        </div>
+      </details>
+
+      <details open>
+        <summary>Induction check for the square-sum formula</summary>
+        <div class="details-body">
+          <p><strong>Base case, n equals one:</strong></p>
+          <div class="equation compact">
+            <math display="block" aria-label="1 squared equals 1 times 2 times 3 over 6 equals 1">
+              <mrow><msup><mn>1</mn><mn>2</mn></msup><mo>=</mo><mfrac><mrow><mn>1</mn><mo>×</mo><mn>2</mn><mo>×</mo><mn>3</mn></mrow><mn>6</mn></mfrac><mo>=</mo><mn>1</mn></mrow>
+            </math>
+          </div>
+          <p><strong>Inductive hypothesis:</strong> suppose</p>
+          <div class="equation compact">
+            <math display="block" aria-label="the sum of squares to k equals k times k plus 1 times 2k plus 1 over 6">
+              <mrow>
+                <munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>k</mi></munderover><msup><mi>j</mi><mn>2</mn></msup>
+                <mo>=</mo><mfrac><mrow><mi>k</mi><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mn>2</mn><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>6</mn></mfrac>
+              </mrow>
+            </math>
+          </div>
+          <p>Add the next square, (k plus one) squared:</p>
+          <div class="equation">
+            <math display="block" aria-label="square sum through k plus k plus 1 squared simplifies to k plus 1 times k plus 2 times 2k plus 3 over 6">
+              <mtable columnalign="right center left">
+                <mtr>
+                  <mtd><mfrac><mrow><mi>k</mi><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mn>2</mn><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>6</mn></mfrac><mo>+</mo><msup><mrow><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup></mtd>
+                  <mtd><mo>=</mo></mtd>
+                  <mtd><mfrac><mrow><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>[</mo><mi>k</mi><mo>(</mo><mn>2</mn><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>+</mo><mn>6</mn><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>]</mo></mrow><mn>6</mn></mfrac></mtd>
+                </mtr>
+                <mtr>
+                  <mtd></mtd><mtd><mo>=</mo></mtd>
+                  <mtd><mfrac><mrow><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mn>2</mn><msup><mi>k</mi><mn>2</mn></msup><mo>+</mo><mn>7</mn><mi>k</mi><mo>+</mo><mn>6</mn><mo>)</mo></mrow><mn>6</mn></mfrac></mtd>
+                </mtr>
+                <mtr>
+                  <mtd></mtd><mtd><mo>=</mo></mtd>
+                  <mtd><mfrac><mrow><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mi>k</mi><mo>+</mo><mn>2</mn><mo>)</mo><mo>(</mo><mn>2</mn><mi>k</mi><mo>+</mo><mn>3</mn><mo>)</mo></mrow><mn>6</mn></mfrac></mtd>
+                </mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>
+            Since two k plus three equals two times (k plus one) plus one, this is precisely the formula at n equals k plus one.
+          </p>
+        </div>
+      </details>
+
+      <details open>
+        <summary>Induction check for the cube-sum formula</summary>
+        <div class="details-body">
+          <p><strong>Base case, n equals one:</strong></p>
+          <div class="equation compact">
+            <math display="block" aria-label="1 cubed equals the square of 1 times 2 over 2 equals 1">
+              <mrow><msup><mn>1</mn><mn>3</mn></msup><mo>=</mo><msup><mrow><mo>[</mo><mfrac><mrow><mn>1</mn><mo>×</mo><mn>2</mn></mrow><mn>2</mn></mfrac><mo>]</mo></mrow><mn>2</mn></msup><mo>=</mo><mn>1</mn></mrow>
+            </math>
+          </div>
+          <p><strong>Inductive hypothesis:</strong> suppose</p>
+          <div class="equation compact">
+            <math display="block" aria-label="the sum of cubes through k equals the square of k times k plus 1 over 2">
+              <mrow>
+                <munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>k</mi></munderover><msup><mi>j</mi><mn>3</mn></msup>
+                <mo>=</mo><mfrac><mrow><msup><mi>k</mi><mn>2</mn></msup><msup><mrow><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup></mrow><mn>4</mn></mfrac>
+              </mrow>
+            </math>
+          </div>
+          <p>Add the next cube:</p>
+          <div class="equation">
+            <math display="block" aria-label="k squared times k plus 1 squared over 4 plus k plus 1 cubed equals k plus 1 squared times k plus 2 squared over 4">
+              <mtable columnalign="right center left">
+                <mtr>
+                  <mtd><mfrac><mrow><msup><mi>k</mi><mn>2</mn></msup><msup><mrow><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup></mrow><mn>4</mn></mfrac><mo>+</mo><msup><mrow><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>3</mn></msup></mtd>
+                  <mtd><mo>=</mo></mtd>
+                  <mtd><msup><mrow><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup><mo>[</mo><mfrac><msup><mi>k</mi><mn>2</mn></msup><mn>4</mn></mfrac><mo>+</mo><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>]</mo></mtd>
+                </mtr>
+                <mtr>
+                  <mtd></mtd><mtd><mo>=</mo></mtd>
+                  <mtd><mfrac><mrow><msup><mrow><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup><mo>(</mo><msup><mi>k</mi><mn>2</mn></msup><mo>+</mo><mn>4</mn><mi>k</mi><mo>+</mo><mn>4</mn><mo>)</mo></mrow><mn>4</mn></mfrac></mtd>
+                </mtr>
+                <mtr>
+                  <mtd></mtd><mtd><mo>=</mo></mtd>
+                  <mtd><mfrac><mrow><msup><mrow><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup><msup><mrow><mo>(</mo><mi>k</mi><mo>+</mo><mn>2</mn><mo>)</mo></mrow><mn>2</mn></msup></mrow><mn>4</mn></mfrac></mtd>
+                </mtr>
+              </mtable>
+            </math>
+          </div>
+          <p>This is the claimed formula with n replaced by k plus one.</p>
+        </div>
+      </details>
+    </section>
+
+    <section class="card" id="big-picture">
+      <p class="section-kicker">Putting it together</p>
+      <h2>What is really happening in all three formulas</h2>
+
+      <div class="grid-3">
+        <div class="mini-card">
+          <h3>Accumulation raises degree</h3>
+          <p>
+            Adding a degree-zero sequence, such as ones, produces a degree-one total. Adding degree-one terms produces a degree-two total.
+            Adding squares produces a cubic total, and adding cubes produces a quartic total.
+          </p>
+        </div>
+        <div class="mini-card">
+          <h3>Differences reverse accumulation</h3>
+          <p>
+            If S(n) is a running total, then S(n) minus S(n minus one) recovers the nth term.
+            This is the discrete counterpart of undoing an accumulation.
+          </p>
+        </div>
+        <div class="mini-card">
+          <h3>Telescoping removes the middle</h3>
+          <p>
+            Writing each term as “next object minus current object” causes neighbouring pieces to cancel when summed.
+            Only boundary terms remain.
+          </p>
+        </div>
+      </div>
+
+      <h3 class="spacer-top">The three final formulas</h3>
+      <div class="formula-grid">
+        <div class="formula-card">
+          <p class="name">First powers</p>
+          <div class="equation compact">
+            <math display="block" aria-label="sum of k equals n times n plus 1 over 2">
+              <mrow><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mi>k</mi><mo>=</mo><mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac></mrow>
+            </math>
+          </div>
+          <p class="plain">Derived by pairing two reversed copies.</p>
+        </div>
+        <div class="formula-card">
+          <p class="name">Squares</p>
+          <div class="equation compact">
+            <math display="block" aria-label="sum of k squared equals n times n plus 1 times 2n plus 1 over 6">
+              <mrow><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msup><mi>k</mi><mn>2</mn></msup><mo>=</mo><mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mn>2</mn><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>6</mn></mfrac></mrow>
+            </math>
+          </div>
+          <p class="plain">Derived by telescoping consecutive cubes.</p>
+        </div>
+        <div class="formula-card">
+          <p class="name">Cubes</p>
+          <div class="equation compact">
+            <math display="block" aria-label="sum of k cubed equals the square of n times n plus 1 over 2">
+              <mrow><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msup><mi>k</mi><mn>3</mn></msup><mo>=</mo><msup><mrow><mo>[</mo><mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac><mo>]</mo></mrow><mn>2</mn></msup></mrow>
+            </math>
+          </div>
+          <p class="plain">Derived by telescoping triangular-number squares.</p>
+        </div>
+      </div>
+
+
+
+      <details open>
+        <summary>Dynamic proof certificate for the n selected at the top of the page</summary>
+        <div class="details-body">
+          <p>
+            The symbolic calculations above prove the increment identities for every n. This table supplies a concrete exact snapshot at your chosen n,
+            using integer arithmetic only.
+          </p>
+          <div id="proofCertificateTable" class="table-wrap"></div>
+        </div>
+      </details>
+
+      <details open>
+        <summary>Exact software stress test — useful validation, but not a replacement for proof</summary>
+        <div class="details-body">
+          <p>
+            The button checks all three formulas for every n from zero through one thousand using JavaScript BigInt arithmetic.
+            Passing thousands of cases is reassuring and can detect a coding or transcription error, but only the universal arguments above establish all n.
+          </p>
+          <button id="stressTestBtn" type="button">Run 3,003 exact checks</button>
+          <div id="stressTestOutput" class="stress-output" aria-live="polite">The stress test has not yet been run.</div>
+        </div>
+      </details>
+
+      <div class="audit-grid">
+        <article class="audit-card">
+          <h3>Domain audit</h3>
+          <p>The formulas are asserted for non-negative integers n. They are not definitions of a finite term-by-term sum for arbitrary real n.</p>
+        </article>
+        <article class="audit-card">
+          <h3>Boundary audit</h3>
+          <p>At n = 0, each sum is empty and equals zero; every closed formula also gives zero.</p>
+        </article>
+        <article class="audit-card">
+          <h3>Cancellation audit</h3>
+          <p>Only identical internal terms with opposite signs are cancelled. Boundary terms are retained explicitly.</p>
+        </article>
+        <article class="audit-card">
+          <h3>Integrality audit</h3>
+          <p>The apparent denominators never create fractional totals; the divisibility arguments below prove the numerators contain the required factors.</p>
+        </article>
+      </div>
+
+
+      <details open>
+        <summary>Why the divisions by 2, 6 and 4 always give whole numbers</summary>
+        <div class="details-body">
+          <h3>The denominator 2 in the first formula</h3>
+          <p>
+            The numbers n and n plus one are consecutive. One of any two consecutive integers is even, so their product is divisible by two.
+            Therefore n times n plus one divided by two is always a whole number.
+          </p>
+
+          <h3>The denominator 6 in the square formula</h3>
+          <p>
+            Six equals two times three. First, n and n plus one are consecutive, so one of them supplies a factor of two.
+            We also need a factor of three. Consider the three possible remainders when n is divided by three:
+          </p>
+          <div class="table-wrap">
+            <table>
+              <caption>Where the factor of three comes from</caption>
+              <thead><tr><th>Remainder of n on division by 3</th><th>Factor divisible by 3</th><th>Reason</th></tr></thead>
+              <tbody>
+                <tr><td>0</td><td>n</td><td>n itself is a multiple of 3.</td></tr>
+                <tr><td>1</td><td>2n + 1</td><td>2(3q + 1) + 1 = 6q + 3.</td></tr>
+                <tr><td>2</td><td>n + 1</td><td>n + 1 has remainder 0.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            Thus n times n plus one times two n plus one always contains both a factor of two and a factor of three,
+            so it is divisible by six.
+          </p>
+
+          <h3>The denominator 4 in the cube formula</h3>
+          <p>
+            The cube formula is the square of n times n plus one divided by two. Since n times n plus one is even,
+            write it as two times an integer M. Squaring gives four M squared, which is divisible by four:
+          </p>
+          <div class="equation">
+            <math display="block" aria-label="if n times n plus 1 equals 2M, then its square divided by 4 equals M squared">
+              <mrow>
+                <mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>=</mo><mn>2</mn><mi>M</mi>
+                <mo>⇒</mo>
+                <mfrac><mrow><msup><mi>n</mi><mn>2</mn></msup><msup><mrow><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup></mrow><mn>4</mn></mfrac>
+                <mo>=</mo><msup><mi>M</mi><mn>2</mn></msup>
+              </mrow>
+            </math>
+          </div>
+        </div>
+      </details>
+
+      <div class="warning">
+        <span class="label">Common mistake</span>
+        <p>
+          In general, the square of a sum is not the sum of the squares. For example,
+          (one plus two) squared is nine, while one squared plus two squared is five.
+          The cube formula is a special statement:
+          the <em>sum of the cubes</em> happens to equal the <em>square of the ordinary sum</em>.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <div class="quiz-card">
+          <h3>Check 1</h3>
+          <p>Why does the pairing proof create n copies of n plus one rather than n plus one copies of n?</p>
+          <button type="button" class="revealBtn secondary" data-target="answer1">Reveal answer</button>
+          <div id="answer1" class="reveal-answer note" hidden>
+            The original sum has n terms, so the two aligned rows have n columns. Each column totals n plus one.
+          </div>
+        </div>
+        <div class="quiz-card">
+          <h3>Check 2</h3>
+          <p>Why does the sum of one from k equals one to n equal n?</p>
+          <button type="button" class="revealBtn secondary" data-target="answer2">Reveal answer</button>
+          <div id="answer2" class="reveal-answer note" hidden>
+            The index k takes exactly n values: one, two, through n. Each contributes one, so there are n ones.
+          </div>
+        </div>
+        <div class="quiz-card">
+          <h3>Check 3</h3>
+          <p>What makes a sum telescope?</p>
+          <button type="button" class="revealBtn secondary" data-target="answer3">Reveal answer</button>
+          <div id="answer3" class="reveal-answer note" hidden>
+            Neighbouring terms contain equal and opposite pieces. Those internal pieces cancel, leaving only the first and last boundary terms.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      This file is self-contained: it uses native HTML, CSS, MathML and JavaScript, with no external libraries or internet connection required.
+    </p>
+  </footer>
+
+  <script>
+    "use strict";
+
+    const nInput = document.getElementById("nInput");
+    const nRange = document.getElementById("nRange");
+    const randomNBtn = document.getElementById("randomNBtn");
+    const expandAllBtn = document.getElementById("expandAllBtn");
+    const printBtn = document.getElementById("printBtn");
+
+    const square = value => value * value;
+    const cube = value => value * value * value;
+    const triangular = value => value * (value + 1n) / 2n;
+
+    function clampN(rawValue) {
+      const parsed = Number.parseInt(rawValue, 10);
+      if (!Number.isFinite(parsed)) return 1;
+      return Math.max(1, Math.min(50, parsed));
+    }
+
+    function formatInteger(value) {
+      return value.toLocaleString("en-GB");
+    }
+
+    function directPowerSum(n, power) {
+      let total = 0n;
+      const bigN = BigInt(n);
+      for (let k = 1n; k <= bigN; k += 1n) {
+        if (power === 1) total += k;
+        if (power === 2) total += square(k);
+        if (power === 3) total += cube(k);
+      }
+      return total;
+    }
+
+    function formulaPowerSum(n, power) {
+      const N = BigInt(n);
+      if (power === 1) return N * (N + 1n) / 2n;
+      if (power === 2) return N * (N + 1n) * (2n * N + 1n) / 6n;
+      if (power === 3) return square(N * (N + 1n) / 2n);
+      throw new Error("Unsupported power");
+    }
+
+    function termString(n, power) {
+      const powerMark = power === 1 ? "" : `<sup>${power}</sup>`;
+      if (n <= 10) {
+        return Array.from({ length: n }, (_, index) => `${index + 1}${powerMark}`).join(" + ");
+      }
+      const opening = Array.from({ length: 5 }, (_, index) => `${index + 1}${powerMark}`).join(" + ");
+      return `${opening} + ⋯ + ${n}${powerMark}`;
+    }
+
+    function setCheck(element, direct, formula) {
+      const ok = direct === formula;
+      element.textContent = ok ? "✓ Direct sum and formula agree exactly." : "Something is wrong: the two values differ.";
+      element.className = `check-line ${ok ? "ok" : "bad"}`;
+    }
+
+    function representativeColumns(n) {
+      if (n <= 12) return Array.from({ length: n }, (_, index) => index + 1);
+      return [1, 2, 3, 4, "ellipsis", n - 3, n - 2, n - 1, n];
+    }
+
+    function buildPairTable(n) {
+      const columns = representativeColumns(n);
+      const header = columns.map(value => `<th>${value === "ellipsis" ? "…" : `Column ${value}`}</th>`).join("");
+      const top = columns.map(value => `<td>${value === "ellipsis" ? "…" : value}</td>`).join("");
+      const bottom = columns.map(value => `<td>${value === "ellipsis" ? "…" : n + 1 - value}</td>`).join("");
+      const sums = columns.map(value => `<td>${value === "ellipsis" ? "…" : n + 1}</td>`).join("");
+
+      document.getElementById("pairTable").innerHTML = `
+        <table>
+          <caption>Two copies of the same sum when n = ${n}</caption>
+          <thead><tr><th>Row</th>${header}</tr></thead>
+          <tbody>
+            <tr><th scope="row">Forward S</th>${top}</tr>
+            <tr><th scope="row">Reverse S</th>${bottom}</tr>
+            <tr><th scope="row">Column total</th>${sums}</tr>
+          </tbody>
+        </table>
+        <p class="small">There are ${n} columns in total, and each full column totals ${n + 1}. Therefore 2S = ${n} × ${n + 1}.</p>
+      `;
+    }
+
+    function buildDotRectangle(n) {
+      const visualN = Math.min(n, 10);
+      const container = document.getElementById("dotRectangle");
+      container.replaceChildren();
+      container.style.gridTemplateColumns = `repeat(${visualN + 1}, 0.8rem)`;
+
+      for (let row = 1; row <= visualN; row += 1) {
+        for (let column = 1; column <= visualN + 1; column += 1) {
+          const dot = document.createElement("span");
+          dot.className = `dot ${column <= row ? "set-a" : "set-b"}`;
+          dot.setAttribute("aria-hidden", "true");
+          container.appendChild(dot);
+        }
+      }
+
+      const t = visualN * (visualN + 1) / 2;
+      document.getElementById("dotNote").textContent = n <= 10
+        ? `${visualN} rows × ${visualN + 1} columns = ${visualN * (visualN + 1)} dots altogether. Each staircase contains ${t} dots.`
+        : `To keep the picture readable, the diagram uses n = ${visualN}. Your calculations above still use n = ${n}.`;
+    }
+
+    function buildSquareIdentityTable(n) {
+      const rowCount = Math.min(n, 8);
+      const rows = [];
+      for (let k = 1; k <= rowCount; k += 1) {
+        const K = BigInt(k);
+        const left = cube(K + 1n) - cube(K);
+        const right = 3n * square(K) + 3n * K + 1n;
+        rows.push(`
+          <tr>
+            <td>${k}</td>
+            <td>${k + 1}<sup>3</sup> − ${k}<sup>3</sup></td>
+            <td>${formatInteger(left)}</td>
+            <td>3(${k}<sup>2</sup>) + 3(${k}) + 1</td>
+            <td>${formatInteger(right)}</td>
+          </tr>
+        `);
+      }
+      const extra = n > rowCount ? `<p class="small">Only the first ${rowCount} rows are shown; the identity itself holds for every positive integer k.</p>` : "";
+      document.getElementById("squareIdentityTable").innerHTML = `
+        <table>
+          <caption>Numerical verification of the identity</caption>
+          <thead><tr><th>k</th><th>Consecutive-cube difference</th><th>Left value</th><th>Expanded expression</th><th>Right value</th></tr></thead>
+          <tbody>${rows.join("")}</tbody>
+        </table>${extra}
+      `;
+    }
+
+    function buildCubeIdentityTable(n) {
+      const rowCount = Math.min(n, 10);
+      const rows = [];
+      for (let k = 1; k <= rowCount; k += 1) {
+        const K = BigInt(k);
+        const previousT = triangular(K - 1n);
+        const currentT = triangular(K);
+        const difference = square(currentT) - square(previousT);
+        rows.push(`
+          <tr>
+            <td>${k}</td>
+            <td>${formatInteger(previousT)}<sup>2</sup></td>
+            <td>${formatInteger(currentT)}<sup>2</sup></td>
+            <td>${formatInteger(difference)}</td>
+            <td>${k}<sup>3</sup> = ${formatInteger(cube(K))}</td>
+          </tr>
+        `);
+      }
+      const extra = n > rowCount ? `<p class="small">Only the first ${rowCount} rows are shown.</p>` : "";
+      document.getElementById("cubeIdentityTable").innerHTML = `
+        <table>
+          <caption>T<sub>k</sub><sup>2</sup> − T<sub>k−1</sub><sup>2</sup> = k<sup>3</sup></caption>
+          <thead><tr><th>k</th><th>T<sub>k−1</sub><sup>2</sup></th><th>T<sub>k</sub><sup>2</sup></th><th>Difference</th><th>k<sup>3</sup></th></tr></thead>
+          <tbody>${rows.join("")}</tbody>
+        </table>${extra}
+      `;
+    }
+
+    function buildCubePatternTable(n) {
+      const rowCount = Math.min(n, 10);
+      const rows = [];
+      let cumulative = 0n;
+      for (let k = 1; k <= rowCount; k += 1) {
+        const K = BigInt(k);
+        cumulative += cube(K);
+        const t = triangular(K);
+        rows.push(`
+          <tr>
+            <td>${k}</td>
+            <td>${formatInteger(cumulative)}</td>
+            <td>${formatInteger(t)}</td>
+            <td>${formatInteger(square(t))}</td>
+            <td>${cumulative === square(t) ? "✓" : "✗"}</td>
+          </tr>
+        `);
+      }
+      const extra = n > rowCount ? `<p class="small">The first ${rowCount} cumulative totals are displayed.</p>` : "";
+      document.getElementById("cubePatternTable").innerHTML = `
+        <table>
+          <caption>Running cube total compared with the square of the running ordinary total</caption>
+          <thead><tr><th>k</th><th>1³ + ⋯ + k³</th><th>T<sub>k</sub></th><th>T<sub>k</sub><sup>2</sup></th><th>Match?</th></tr></thead>
+          <tbody>${rows.join("")}</tbody>
+        </table>${extra}
+      `;
+    }
+
+
+
+    const cubeLayerRange = document.getElementById("cubeLayerRange");
+    const stressTestBtn = document.getElementById("stressTestBtn");
+    let selectedCubeLayer = 4;
+
+    const visualPalette = [
+      "#4f8fc0", "#efb84f", "#65a97a", "#a77ac0", "#d97878", "#5ca9a5", "#c18a58"
+    ];
+
+    function buildFiniteDifferenceTable(power, targetId) {
+      const count = 8;
+      const totals = [];
+      for (let n = 0; n <= count; n += 1) {
+        totals.push(directPowerSum(n, power));
+      }
+
+      const levels = [totals];
+      const maxDifference = power + 1;
+      for (let level = 1; level <= maxDifference; level += 1) {
+        const previous = levels[level - 1];
+        const next = [null];
+        for (let i = 1; i < previous.length; i += 1) {
+          if (previous[i] === null || previous[i - 1] === null) next.push(null);
+          else next.push(previous[i] - previous[i - 1]);
+        }
+        levels.push(next);
+      }
+
+      const headers = ["n", `S${power}(n)`];
+      for (let level = 1; level <= maxDifference; level += 1) {
+        headers.push(`${"Δ".repeat(level)}S${power}`);
+      }
+
+      const rows = [];
+      for (let n = 0; n <= count; n += 1) {
+        const cells = [`<td>${n}</td>`, `<td>${formatInteger(levels[0][n])}</td>`];
+        for (let level = 1; level <= maxDifference; level += 1) {
+          const value = levels[level][n];
+          cells.push(`<td>${value === null ? "—" : formatInteger(value)}</td>`);
+        }
+        rows.push(`<tr>${cells.join("")}</tr>`);
+      }
+
+      document.getElementById(targetId).innerHTML = `
+        <table class="degree-table">
+          <caption>Backward finite differences; the final displayed difference is constant.</caption>
+          <thead><tr>${headers.map(item => `<th>${item}</th>`).join("")}</tr></thead>
+          <tbody>${rows.join("")}</tbody>
+        </table>
+      `;
+    }
+
+    function buildSquareGnomons(n) {
+      const visualN = Math.min(n, 6);
+      const gallery = document.getElementById("squareGnomonGallery");
+      const cards = [];
+
+      for (let k = 1; k <= visualN; k += 1) {
+        const cells = [];
+        for (let row = 1; row <= k; row += 1) {
+          for (let column = 1; column <= k; column += 1) {
+            const layer = Math.max(row, column);
+            cells.push(`<span class="gnomon-cell" title="Layer ${layer}" style="background:${visualPalette[(layer - 1) % visualPalette.length]}"></span>`);
+          }
+        }
+        const odds = Array.from({ length: k }, (_, index) => 2 * index + 1).join(" + ");
+        cards.push(`
+          <article class="gnomon-card">
+            <div class="gnomon-grid" style="grid-template-columns:repeat(${k}, 1fr)">${cells.join("")}</div>
+            <p class="gnomon-caption">${k}<sup>2</sup> = ${odds}</p>
+          </article>
+        `);
+      }
+      gallery.innerHTML = cards.join("");
+      document.getElementById("squareGnomonNote").textContent = n <= 6
+        ? `All squares from 1² through ${n}² are shown.`
+        : `The picture stops at 6² to remain readable. The multiplicity table below still uses your actual n = ${n}.`;
+
+      const indices = n <= 12
+        ? Array.from({ length: n }, (_, index) => index + 1)
+        : [1, 2, 3, 4, 5, 6, "ellipsis", n - 2, n - 1, n];
+      let contributionTotal = 0n;
+      const rows = indices.map(j => {
+        if (j === "ellipsis") return '<tr><td colspan="5">⋮</td></tr>';
+        const odd = 2 * j - 1;
+        const multiplicity = n - j + 1;
+        const contribution = BigInt(odd) * BigInt(multiplicity);
+        contributionTotal += contribution;
+        return `<tr><td>${j}</td><td>${odd}</td><td>${multiplicity}</td><td>${odd} × ${multiplicity}</td><td>${formatInteger(contribution)}</td></tr>`;
+      });
+      const displayedAll = n <= 12;
+      document.getElementById("gnomonMultiplicityTable").innerHTML = `
+        <table>
+          <caption>How often each odd layer occurs when all squares 1² through n² are collected</caption>
+          <thead><tr><th>Layer j</th><th>Cells in layer 2j−1</th><th>Number of squares containing it</th><th>Contribution</th><th>Cells contributed</th></tr></thead>
+          <tbody>${rows.join("")}</tbody>
+        </table>
+        <p class="small">${displayedAll
+          ? `The displayed contributions total ${formatInteger(contributionTotal)}, exactly S₂(${n}).`
+          : `Representative rows are shown. The exact formula uses every j from 1 through ${n}.`}</p>
+      `;
+    }
+
+    function triangularNumber(n) {
+      return n * (n + 1) / 2;
+    }
+
+    function cubeLayerPath(sideOuter, sideInner, x, y) {
+      return [
+        `M ${x} ${y}`,
+        `H ${x + sideOuter}`,
+        `V ${y + sideOuter}`,
+        `H ${x}`,
+        "Z",
+        `M ${x} ${y}`,
+        `H ${x + sideInner}`,
+        `V ${y + sideInner}`,
+        `H ${x}`,
+        "Z"
+      ].join(" ");
+    }
+
+    function renderCubeGnomonVisual(n) {
+      const visualN = Math.min(n, 7);
+      selectedCubeLayer = Math.max(1, Math.min(selectedCubeLayer, visualN));
+      cubeLayerRange.max = String(visualN);
+      cubeLayerRange.value = String(selectedCubeLayer);
+      document.getElementById("cubeLayerLabel").textContent = `k = ${selectedCubeLayer}`;
+
+      const svg = document.getElementById("cubeGnomonSvg");
+      const margin = 48;
+      const available = 520;
+      const totalSide = triangularNumber(visualN);
+      const scale = available / totalSide;
+      const parts = [
+        '<rect x="0" y="0" width="620" height="620" fill="#fbfdff" rx="16" />'
+      ];
+
+      for (let k = visualN; k >= 1; k -= 1) {
+        const outer = triangularNumber(k) * scale;
+        const inner = triangularNumber(k - 1) * scale;
+        const selected = k === selectedCubeLayer;
+        parts.push(`
+          <path d="${cubeLayerPath(outer, inner, margin, margin)}"
+                fill="${visualPalette[(k - 1) % visualPalette.length]}"
+                fill-rule="evenodd"
+                stroke="#31495d" stroke-width="${selected ? 3 : 1.2}"
+                opacity="${selected ? 0.96 : 0.42}"
+                data-layer="${k}" tabindex="0" role="button"
+                aria-label="Select layer ${k}" />
+        `);
+      }
+
+      parts.push(`<rect x="${margin}" y="${margin}" width="${available}" height="${available}" fill="none" stroke="#172033" stroke-width="3" />`);
+      parts.push(`<text x="${margin + available / 2}" y="${margin + available + 36}" text-anchor="middle" font-size="19" font-family="Arial, sans-serif" fill="#172033">outer side = T${visualN} = ${totalSide}</text>`);
+      svg.innerHTML = parts.join("");
+
+      svg.querySelectorAll("path[data-layer]").forEach(path => {
+        const activate = () => {
+          selectedCubeLayer = Number(path.dataset.layer);
+          renderCubeGnomonVisual(n);
+        };
+        path.addEventListener("click", activate);
+        path.addEventListener("keydown", event => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            activate();
+          }
+        });
+      });
+
+      const k = selectedCubeLayer;
+      const previous = triangularNumber(k - 1);
+      const current = triangularNumber(k);
+      const area = current * current - previous * previous;
+      document.getElementById("cubeLayerReadout").innerHTML = `
+        T<sub>${k - 1}</sub> = ${previous}, T<sub>${k}</sub> = ${current}.<br>
+        Added area = ${current}<sup>2</sup> − ${previous}<sup>2</sup>
+        = (${current} − ${previous})(${current} + ${previous})
+        = ${k} × ${k * k} = ${area} = ${k}<sup>3</sup>.
+      `;
+      document.getElementById("cubeVisualNote").textContent = n <= 7
+        ? `The outer square represents T${n}² and contains one layer for each cube from 1³ to ${n}³.`
+        : `To keep the geometry readable, the diagram uses n = 7. Your numerical calculations still use n = ${n}.`;
+    }
+
+    function binomial(n, r) {
+      if (r < 0 || r > n) return 0n;
+      let result = 1n;
+      const R = Math.min(r, n - r);
+      for (let i = 1; i <= R; i += 1) {
+        result = result * BigInt(n - R + i) / BigInt(i);
+      }
+      return result;
+    }
+
+    function buildPascalTriangle() {
+      const rows = [];
+      for (let n = 0; n <= 7; n += 1) {
+        const values = [];
+        for (let r = 0; r <= n; r += 1) {
+          values.push(`<span class="pascal-number" title="C(${n},${r})">${formatInteger(binomial(n, r))}</span>`);
+        }
+        rows.push(`<div class="pascal-row">${values.join("")}</div>`);
+      }
+      document.getElementById("pascalTriangle").innerHTML = rows.join("");
+    }
+
+    function buildProofCertificateTable(n) {
+      const N = BigInt(n);
+      const rows = [];
+      for (let power = 1; power <= 3; power += 1) {
+        const current = formulaPowerSum(n, power);
+        const previous = formulaPowerSum(n - 1, power);
+        const increment = current - previous;
+        const required = power === 1 ? N : power === 2 ? N * N : N * N * N;
+        const pass = increment === required;
+        rows.push(`
+          <tr>
+            <td>${power}</td>
+            <td>${formatInteger(previous)}</td>
+            <td>${formatInteger(current)}</td>
+            <td>${formatInteger(increment)}</td>
+            <td>${formatInteger(required)}</td>
+            <td><span class="proof-status ${pass ? "pass" : "caution"}">${pass ? "✓ exact" : "check"}</span></td>
+          </tr>
+        `);
+      }
+      document.getElementById("proofCertificateTable").innerHTML = `
+        <table>
+          <caption>Numerical recurrence snapshot at n = ${n}</caption>
+          <thead><tr><th>Power p</th><th>F<sub>p</sub>(n−1)</th><th>F<sub>p</sub>(n)</th><th>Increase</th><th>Required n<sup>p</sup></th><th>Status</th></tr></thead>
+          <tbody>${rows.join("")}</tbody>
+        </table>
+      `;
+    }
+
+    function runExactStressTest() {
+      const limit = 1000;
+      let running1 = 0n;
+      let running2 = 0n;
+      let running3 = 0n;
+      for (let n = 0; n <= limit; n += 1) {
+        const N = BigInt(n);
+        if (n > 0) {
+          running1 += N;
+          running2 += N * N;
+          running3 += N * N * N;
+        }
+        if (running1 !== formulaPowerSum(n, 1) ||
+            running2 !== formulaPowerSum(n, 2) ||
+            running3 !== formulaPowerSum(n, 3)) {
+          document.getElementById("stressTestOutput").innerHTML = `<span class="proof-status caution">Mismatch</span> A discrepancy was found at n = ${n}.`;
+          return;
+        }
+      }
+      document.getElementById("stressTestOutput").innerHTML = `
+        <span class="proof-status pass">✓ all passed</span>
+        All 3,003 exact comparisons passed for every n from 0 through ${limit}. No floating-point rounding was used.
+        <br><span class="small">This validates the implementation; the symbolic proofs are what establish every n.</span>
+      `;
+    }
+
+
+    function updatePage(rawN) {
+      const n = clampN(rawN);
+      nInput.value = String(n);
+      nRange.value = String(n);
+
+      const direct1 = directPowerSum(n, 1);
+      const direct2 = directPowerSum(n, 2);
+      const direct3 = directPowerSum(n, 3);
+      const formula1 = formulaPowerSum(n, 1);
+      const formula2 = formulaPowerSum(n, 2);
+      const formula3 = formulaPowerSum(n, 3);
+
+      document.getElementById("terms1").innerHTML = `${termString(n, 1)}`;
+      document.getElementById("terms2").innerHTML = `${termString(n, 2)}`;
+      document.getElementById("terms3").innerHTML = `${termString(n, 3)}`;
+
+      document.getElementById("direct1").textContent = `Direct total: ${formatInteger(direct1)}`;
+      document.getElementById("direct2").textContent = `Direct total: ${formatInteger(direct2)}`;
+      document.getElementById("direct3").textContent = `Direct total: ${formatInteger(direct3)}`;
+
+      document.getElementById("formula1Text").textContent = `Formula: ${n} × ${n + 1} ÷ 2 = ${formatInteger(formula1)}`;
+      document.getElementById("formula2Text").textContent = `Formula: ${n} × ${n + 1} × ${2 * n + 1} ÷ 6 = ${formatInteger(formula2)}`;
+      document.getElementById("formula3Text").textContent = `Formula: [${n} × ${n + 1} ÷ 2]² = ${formatInteger(formula3)}`;
+
+      setCheck(document.getElementById("check1"), direct1, formula1);
+      setCheck(document.getElementById("check2"), direct2, formula2);
+      setCheck(document.getElementById("check3"), direct3, formula3);
+
+      buildPairTable(n);
+      buildDotRectangle(n);
+      buildSquareIdentityTable(n);
+      buildCubeIdentityTable(n);
+      buildCubePatternTable(n);
+      buildFiniteDifferenceTable(1, "differenceTable1");
+      buildFiniteDifferenceTable(2, "differenceTable2");
+      buildFiniteDifferenceTable(3, "differenceTable3");
+      buildSquareGnomons(n);
+      renderCubeGnomonVisual(n);
+      buildProofCertificateTable(n);
+    }
+
+    nInput.addEventListener("input", event => updatePage(event.target.value));
+    nRange.addEventListener("input", event => updatePage(event.target.value));
+
+    randomNBtn.addEventListener("click", () => {
+      const n = Math.floor(Math.random() * 50) + 1;
+      updatePage(n);
+    });
+
+    cubeLayerRange.addEventListener("input", event => {
+      selectedCubeLayer = Number(event.target.value);
+      renderCubeGnomonVisual(clampN(nInput.value));
+    });
+
+    stressTestBtn.addEventListener("click", runExactStressTest);
+
+    document.querySelectorAll(".revealBtn").forEach(button => {
+      button.addEventListener("click", () => {
+        const target = document.getElementById(button.dataset.target);
+        const willShow = target.hidden;
+        target.hidden = !willShow;
+        button.textContent = willShow ? "Hide answer" : "Reveal answer";
+      });
+    });
+
+    expandAllBtn.addEventListener("click", () => {
+      const details = Array.from(document.querySelectorAll("details"));
+      const allOpen = details.every(item => item.open);
+      details.forEach(item => { item.open = !allOpen; });
+      expandAllBtn.textContent = allOpen ? "Open every explanation" : "Close every explanation";
+    });
+
+    printBtn.addEventListener("click", () => window.print());
+
+    buildPascalTriangle();
+    updatePage(6);
+  </script>
+</body>
+</html>
