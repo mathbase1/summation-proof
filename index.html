@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Deriving the Sum of the First n Squares — From Absolute First Principles</title>
+<title>Deriving the Sum of the First n Squares — A Natural Discovery from Absolute First Principles</title>
 <style>
 :root{
   --ink:#172033;
@@ -28,9 +28,10 @@
   --radius:18px;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;overflow-x:hidden}
 body{
   margin:0;
+  overflow-x:hidden;
   color:var(--ink);
   background:var(--page);
   font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
@@ -284,7 +285,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
   font-weight:700;
 }
 .operator{font-weight:900;color:#536071}
-.pair-table-wrap{overflow-x:auto}
+.pair-table-wrap{width:100%;max-width:100%;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .pair-table{border-collapse:separate;border-spacing:5px;margin:8px auto}
 .pair-table td,.pair-table th{
   min-width:48px;
@@ -406,6 +407,177 @@ details>div{padding:0 16px 16px}
 hr{border:0;border-top:1px solid var(--line);margin:28px 0}
 footer{padding:30px 20px 55px;text-align:center;color:#566378}
 .print-note{font-size:.85rem;color:#6c7888}
+
+/* Natural-discovery additions */
+.discovery-question{
+  margin:20px 0;
+  padding:20px;
+  border:2px dashed #9eb9cf;
+  border-radius:14px;
+  background:#f8fcff;
+}
+.discovery-question strong{color:#15486e}
+.discovery-chain{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  margin:20px 0;
+}
+.discovery-chain .chain-step{
+  position:relative;
+  padding:16px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fbfdff;
+  text-align:center;
+  font-weight:760;
+}
+.discovery-chain .chain-step:not(:last-child)::after{
+  content:"→";
+  position:absolute;
+  right:-17px;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:2;
+  color:var(--teal);
+  font-size:1.45rem;
+  font-weight:900;
+}
+@media (max-width:900px){
+  .discovery-chain{grid-template-columns:1fr 1fr}
+  .discovery-chain .chain-step::after{display:none}
+}
+@media (max-width:560px){.discovery-chain{grid-template-columns:1fr}}
+.growth-lab-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px;
+  margin:18px 0;
+}
+@media (max-width:860px){.growth-lab-grid{grid-template-columns:1fr}}
+.growth-card{
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fbfdff;
+}
+.growth-card h4{margin-top:0}
+.growth-card .growth-result{
+  margin:10px 0;
+  padding:10px;
+  border-radius:9px;
+  background:#edf5fb;
+  text-align:center;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:1.13rem;
+}
+.line-units{display:flex;flex-wrap:wrap;gap:4px;margin:12px 0;justify-content:center}
+.line-unit{width:24px;height:24px;border:1px solid #7e9ab1;border-radius:4px;background:#dfeaf2}
+.line-unit.new{background:#ffda84;border-color:#a66a00}
+.growth-grid{
+  display:grid;
+  gap:2px;
+  width:min(220px,100%);
+  aspect-ratio:1/1;
+  margin:12px auto;
+  padding:5px;
+  border:1px solid #aebfce;
+  border-radius:9px;
+  background:#e9eff4;
+}
+.growth-grid .old-cell{background:#b8d6ec;border:1px solid rgba(23,70,111,.28);border-radius:2px}
+.growth-grid .new-cell{background:#ffda84;border:1px solid rgba(154,93,0,.38);border-radius:2px}
+.substitution-map,.ledger-table{
+  width:100%;
+  border-collapse:collapse;
+  margin:18px 0;
+}
+.substitution-map{table-layout:fixed;max-width:100%}
+.substitution-map th,.substitution-map td{overflow-wrap:anywhere;word-break:normal}
+@media (max-width:560px){
+  .substitution-map{font-size:.82rem}
+  .substitution-map th,.substitution-map td{padding:8px 6px}
+}
+.substitution-map th,.substitution-map td,.ledger-table th,.ledger-table td{
+  padding:11px 12px;
+  border:1px solid var(--line);
+  text-align:center;
+  vertical-align:middle;
+}
+.substitution-map th,.ledger-table th{background:#edf5fb;color:#17466f}
+.substitution-map td:first-child{text-align:left;font-weight:800;color:#244f70}
+.ledger-table .equals-cell{
+  width:42px;
+  background:#fff7df;
+  color:#8a5700;
+  font-weight:900;
+  font-size:1.25rem;
+}
+.ledger-table tfoot td{background:#eaf7ee;font-weight:900;color:#1f6336}
+.ledger-table .left-cell{background:#f4f0ff}
+.ledger-table .square-cell{background:#edf7ff}
+.ledger-table .linear-cell{background:#fff5e1}
+.ledger-table .one-cell{background:#f2faed}
+.token-r{color:#6b4ca5;font-weight:900}
+.token-k{color:#1f5f99;font-weight:900}
+.token-next{color:#087f8c;font-weight:900}
+.substitution-warning{
+  margin:18px 0;
+  padding:16px 18px;
+  border-left:6px solid var(--red);
+  border-radius:12px;
+  background:var(--red-soft);
+}
+.substitution-warning strong{color:#7d2828}
+.two-route{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  margin:18px 0;
+}
+@media (max-width:760px){.two-route{grid-template-columns:1fr}}
+.route-card{
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fbfdff;
+}
+.route-card.preferred{border:2px solid #78b68b;background:#f1faf4}
+.route-card h4{margin-top:0}
+.coordinate-proof{
+  margin:18px 0;
+  padding:18px;
+  border:1px solid #cbb9e2;
+  border-radius:14px;
+  background:#f7f2ff;
+}
+.coordinate-proof ol{margin:10px 0 0;padding-left:24px}
+.coordinate-proof li{margin:9px 0}
+.equation-stack{
+  margin:16px 0;
+  padding:16px;
+  border:1px solid #c8d7e5;
+  border-radius:12px;
+  background:#fbfdff;
+  overflow-x:auto;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:1.17rem;
+  line-height:1.9;
+}
+.equation-stack .line{display:block;white-space:nowrap}
+.small-label{
+  display:inline-block;
+  margin-bottom:6px;
+  padding:4px 9px;
+  border-radius:999px;
+  background:#e7f8fa;
+  color:#086c77;
+  font-size:.78rem;
+  font-weight:850;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+
 @media print{
   .nav-wrap,.controls,.proof-stage-controls,.print-note{display:none!important}
   body{background:white;font-size:12pt}
@@ -417,14 +589,14 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
 <body>
 <header class="hero">
   <div class="hero-inner">
-    <div class="eyebrow">One formula only · no skipped algebra</div>
+    <div class="eyebrow">One formula only · no guessed leap to cubes · no skipped algebra</div>
     <h1>Where the sum-of-squares formula actually comes from</h1>
     <div class="hero-formula" aria-label="The sum from i equals one to n of i squared equals n times n plus one times two n plus one divided by six">
       1<sup>2</sup> + 2<sup>2</sup> + 3<sup>2</sup> + ··· + n<sup>2</sup>
       <span>=</span>
       <span class="frac"><span class="top">n(n + 1)(2n + 1)</span><span class="bottom">6</span></span>
     </div>
-    <p>This page starts with what every symbol means, proves the one smaller fact we need, manufactures the square terms from ordinary multiplication, shows every cancellation, and then checks the final rule independently.</p>
+    <p>This page starts with what every symbol means, proves the one smaller fact we need, and then develops the cube idea as a natural consequence of asking how a growing shape changes from one stage to the next. Every substitution, cancellation, sign change and factor is shown before the final rule is checked independently.</p>
   </div>
 </header>
 <div class="nav-wrap">
@@ -432,7 +604,7 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
     <a href="#meaning">1. Meaning</a>
     <a href="#plan">2. Proof plan</a>
     <a href="#ordinary-sum">3. Sum 1 to n</a>
-    <a href="#cube-identity">4. Why cubes</a>
+    <a href="#cube-identity">4. How cubes arise</a>
     <a href="#example-four">5. Concrete example</a>
     <a href="#general-proof">6. General derivation</a>
     <a href="#where-factors">7. Where factors came from</a>
@@ -453,7 +625,7 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
       <tr><td><strong>n</strong></td><td>A fixed positive whole number telling us where to stop.</td><td>If n = 4, we stop at 4<sup>2</sup>.</td></tr>
       <tr><td><strong>i</strong> or <strong>k</strong></td><td>A temporary counting letter. It takes the values 1, then 2, then 3, and so on, up to n.</td><td>For n = 4, the counter takes 1, 2, 3, 4.</td></tr>
       <tr><td><strong>i<sup>2</sup></strong></td><td>i multiplied by itself. The raised 2 does not mean “times 2”.</td><td>4<sup>2</sup> = 4 × 4 = 16.</td></tr>
-      <tr><td><strong>k<sup>3</sup></strong></td><td>k multiplied by itself three times. We use cubes later only because a neighbouring-cube difference creates square terms.</td><td>4<sup>3</sup> = 4 × 4 × 4 = 64.</td></tr>
+      <tr><td><strong>k<sup>3</sup></strong></td><td>k multiplied by itself three times. We will not simply announce that cubes are useful: we will discover them by examining how lines, squares and cubes grow by one stage.</td><td>4<sup>3</sup> = 4 × 4 × 4 = 64.</td></tr>
       <tr><td><strong>···</strong></td><td>Continue the same pattern without writing every middle term.</td><td>1 + 2 + 3 + ··· + n means 1, then 2, then 3, and every next whole number until n.</td></tr>
       <tr><td><strong>Σ</strong></td><td>“Add all the listed values.” It is simply a compact instruction for repeated addition.</td><td>Σi<sup>2</sup> from i = 1 to 4 means 1<sup>2</sup> + 2<sup>2</sup> + 3<sup>2</sup> + 4<sup>2</sup>.</td></tr>
       <tr><td><strong>n(n + 1)</strong></td><td>Multiplication. A number directly beside brackets means multiply.</td><td>4(4 + 1) = 4 × 5.</td></tr>
@@ -486,13 +658,13 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
   <p>The answer is not pulled out of nowhere. We will force it to appear from facts we can prove directly.</p>
 
   <div class="flow" aria-label="Four-stage proof plan">
-    <div class="flow-box">Prove<br><strong>1 + 2 + ··· + n</strong></div>
+    <div class="flow-box">Prove the easier supporting total<br><strong>1 + 2 + ··· + n</strong></div>
     <div class="flow-arrow">→</div>
-    <div class="flow-box">Create an identity containing<br><strong>k<sup>2</sup></strong></div>
+    <div class="flow-box">Find a stage-to-stage growth rule that<br><strong>naturally contains k<sup>2</sup></strong></div>
     <div class="flow-arrow">→</div>
-    <div class="flow-box">Add that identity for<br><strong>k = 1 to n</strong></div>
+    <div class="flow-box">Add those growth rules so the<br><strong>intermediate stages cancel</strong></div>
     <div class="flow-arrow">→</div>
-    <div class="flow-box">Solve the resulting equation for<br><strong>1<sup>2</sup> + ··· + n<sup>2</sup></strong></div>
+    <div class="flow-box">Solve the remaining equation for<br><strong>1<sup>2</sup> + ··· + n<sup>2</sup></strong></div>
   </div>
 
   <h3>The only algebra rules we will use</h3>
@@ -506,8 +678,8 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
   </div>
 
   <div class="callout green">
-    <span class="callout-title">The key idea</span>
-    <p>The difference between two neighbouring cubes, k<sup>3</sup> and (k − 1)<sup>3</sup>, contains a k<sup>2</sup> term. Adding all those neighbouring-cube differences makes almost every cube cancel. That gives one equation containing the square sum we want.</p>
+    <span class="callout-title">The problem we must solve before any cube appears</span>
+    <p>A long sum becomes easier if its terms can be written as changes between neighbouring stages, because neighbouring changes can cancel when added. We will therefore ask: <strong>what simple growing object has a one-step increase built from square-sized pieces?</strong> The answer will lead us to cubes; cubes will not be inserted as an unexplained trick.</p>
   </div>
 </section>
 
@@ -535,9 +707,14 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
       <div class="why">The left side is T<sub>n</sub> + T<sub>n</sub> = 2T<sub>n</sub>. We also add the matching entries on the right.</div>
     </div>
     <div class="tiny-step">
-      <strong>Every column equals n + 1.</strong>
+      <strong>Every displayed column equals n + 1.</strong>
       <span class="eq">1 + n = n + 1, &nbsp; 2 + (n − 1) = n + 1, &nbsp; 3 + (n − 2) = n + 1</span>
-      <div class="why">In each column, the amount added to the first number is exactly what is needed to reach n + 1.</div>
+      <div class="why">These examples show the pattern, but examples alone are not the general proof.</div>
+    </div>
+    <div class="tiny-step">
+      <strong>Prove an arbitrary column, not just the first few.</strong>
+      <span class="eq">k + [n − (k − 1)] = k + (n − k + 1) = n + 1</span>
+      <div class="why">The k-th entry of the increasing row is k. In the reversed row, moving k − 1 places from n leaves n − (k − 1) = n + 1 − k. Adding them gives k + n + 1 − k = n + 1, because +k and −k cancel. This proves the claim for every column position k from 1 to n.</div>
     </div>
     <div class="tiny-step">
       <strong>There are n columns.</strong>
@@ -568,91 +745,122 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
 </section>
 
 <section id="cube-identity">
-  <p class="section-kicker">Manufacturing square terms</p>
-  <h2>4. Why compare neighbouring cubes?</h2>
-  <p>Our target contains k<sup>2</sup>. A useful trick is to look one power higher, at k<sup>3</sup>, and subtract the previous cube. The leading k<sup>3</sup> parts cancel, leaving an expression whose highest power is k<sup>2</sup>.</p>
+  <p class="section-kicker">Discovering the useful identity instead of guessing it</p>
+  <h2>4. How would anyone naturally arrive at cubes?</h2>
+  <p class="lead">This is the crucial question. Saying “look one power higher” is not a satisfying reason by itself. We will build the idea from a problem-solving goal, a cancellation pattern, and the geometry of growing shapes.</p>
+
+  <div class="callout amber">
+    <span class="callout-title">We are not allowed to begin with “try cubes”</span>
+    <p>At this point we know only that we want to add the square-sized terms 1<sup>2</sup>, 2<sup>2</sup>, …, n<sup>2</sup>. We now ask what kind of representation would make a long addition collapse to something short.</p>
+  </div>
+
+  <h3>4A. First discover the cancellation mechanism we want</h3>
+  <p>Imagine that G(k) means “the total size of some object at stage k”. Then G(k) − G(k − 1) means the amount added when the object grows from stage k − 1 to stage k.</p>
+
+  <div class="equation-stack" aria-label="A concrete telescoping example">
+    <span class="line">[G(1) − G(0)] + [G(2) − G(1)] + [G(3) − G(2)] + [G(4) − G(3)]</span>
+    <span class="line">= G(1) − G(0) + G(2) − G(1) + G(3) − G(2) + G(4) − G(3)</span>
+    <span class="line">= −G(0) + [G(1) − G(1)] + [G(2) − G(2)] + [G(3) − G(3)] + G(4)</span>
+    <span class="line">= G(4) − G(0).</span>
+  </div>
+
+  <div class="step-list">
+    <div class="tiny-step">
+      <strong>Why does G(1) cancel?</strong>
+      <span class="eq">+G(1) appears in the first bracket, and −G(1) appears in the second bracket.</span>
+      <div class="why">They are equal quantities with opposite signs, so +G(1) − G(1) = 0.</div>
+    </div>
+    <div class="tiny-step">
+      <strong>Why does every interior stage cancel?</strong>
+      <span class="eq">For any interior index j, +G(j) occurs in G(j) − G(j − 1), while −G(j) occurs in G(j + 1) − G(j).</span>
+      <div class="why">Thus each G(j), for 1 ≤ j ≤ n − 1, appears exactly once positively and exactly once negatively.</div>
+    </div>
+    <div class="tiny-step">
+      <strong>What survives?</strong>
+      <span class="eq">[G(1) − G(0)] + ··· + [G(n) − G(n − 1)] = G(n) − G(0).</span>
+      <div class="why">G(0) has no earlier positive partner, and G(n) has no later negative partner. They are the two endpoints.</div>
+    </div>
+  </div>
+
+  <div class="discovery-question">
+    <strong>The search problem is now precise:</strong>
+    <p>Can we find a simple object G whose one-step growth, G(k) − G(k − 1), contains the square term k<sup>2</sup> together with only simpler correction terms that we already know how to add?</p>
+  </div>
+
+  <h3>4B. Let growing geometry tell us which object to try</h3>
+  <p>A term k<sup>2</sup> counts a k by k area. So instead of randomly testing formulas, compare how familiar shapes change when their side length grows from k − 1 to k.</p>
+
+  <div class="growth-lab-grid">
+    <div class="growth-card">
+      <h4>Grow a line</h4>
+      <p>Total at stage k: <strong>k</strong> unit lengths.</p>
+      <div class="growth-result">k − (k − 1) = 1</div>
+      <p>The new part is a single unit: a constant, not a square-sized quantity.</p>
+    </div>
+    <div class="growth-card">
+      <h4>Grow a square</h4>
+      <p>Total at stage k: <strong>k<sup>2</sup></strong> unit squares.</p>
+      <div class="growth-result">k<sup>2</sup> − (k − 1)<sup>2</sup> = 2k − 1</div>
+      <p>The new border is one row of k cells plus one column of k − 1 further cells. Its size is linear in k.</p>
+    </div>
+    <div class="growth-card">
+      <h4>Grow a cube</h4>
+      <p>Total at stage k: <strong>k<sup>3</sup></strong> unit cubes.</p>
+      <div class="growth-result">k<sup>3</sup> − (k − 1)<sup>3</sup> = a shell</div>
+      <p>The shell is made from one-unit-thick sheets whose lengths are k or k − 1. Sheet counts multiply two lengths, so square terms appear naturally.</p>
+    </div>
+  </div>
 
   <div class="callout teal">
-    <span class="callout-title">This is the reason cubes appear</span>
-    <p>We are not claiming the square sum is “about cubes” by magic. We deliberately choose a difference of cubes because multiplying it out produces a square term, and consecutive differences later cancel when added.</p>
+    <span class="callout-title">The natural reasoning, stated without jargon</span>
+    <p>Growing a line adds a point-sized piece. Growing a square adds an edge-shaped border. Growing a cube adds face-shaped sheets. Because our target terms k<sup>2</sup> are areas, the first familiar growing object whose new layer is built from areas is a cube. That is why cubes are a systematic candidate—not a lucky guess.</p>
   </div>
 
-  <h3>First derive (k − 1)<sup>3</sup> with every multiplication shown</h3>
-  <p>By definition, a cube means three identical factors. Geometrically, a k × k × k cube has k layers; each layer contains k × k unit cubes, so the total is k × k × k = k<sup>3</sup>.</p>
-  <div class="formula">(k − 1)<sup>3</sup> = (k − 1)(k − 1)(k − 1).</div>
+  <h4>Interactive growth laboratory</h4>
+  <div class="controls">
+    <label for="growthK">Grow each object from side k − 1 to side k:</label>
+    <input id="growthK" type="range" min="2" max="9" value="4">
+    <output id="growthKValue" for="growthK">4</output>
+  </div>
+  <div id="growthOutput" class="output" aria-live="polite"></div>
 
-  <div class="step-list">
-    <div class="tiny-step">
-      <strong>Multiply the first two brackets.</strong>
-      <span class="eq">(k − 1)(k − 1)</span>
-      <div class="why">Each term in the first bracket multiplies each term in the second bracket.</div>
+  <h3>4C. Why use k<sup>3</sup> − (k − 1)<sup>3</sup> rather than (k + 1)<sup>3</sup> − k<sup>3</sup>?</h3>
+  <p>Both expressions count the shell added between neighbouring cubes. The difference is only where we place the label k.</p>
+
+  <div class="two-route">
+    <div class="route-card preferred">
+      <h4>Backward difference — the version we choose</h4>
+      <div class="formula">k<sup>3</sup> − (k − 1)<sup>3</sup></div>
+      <p>“Stage k minus the stage immediately before it.”</p>
+      <p>For k = 1, it starts with 1<sup>3</sup> − 0<sup>3</sup>. For k = n, it ends with n<sup>3</sup> − (n − 1)<sup>3</sup>. Adding all rows therefore leaves the clean endpoints n<sup>3</sup> − 0<sup>3</sup> = n<sup>3</sup>.</p>
     </div>
-    <div class="tiny-step">
-      <strong>Write all four products.</strong>
-      <span class="eq">k·k + k·(−1) + (−1)·k + (−1)·(−1)</span>
-      <div class="why">The four products are first–first, first–second, second–first, and second–second.</div>
-    </div>
-    <div class="tiny-step">
-      <strong>Evaluate those products.</strong>
-      <span class="eq">k<sup>2</sup> − k − k + 1</span>
-      <div class="why">k·k = k<sup>2</sup>; k·(−1) = −k; (−1)·k = −k; and (−1)(−1) = +1.</div>
-    </div>
-    <div class="tiny-step">
-      <strong>Combine the two identical −k terms.</strong>
-      <span class="eq">(k − 1)<sup>2</sup> = k<sup>2</sup> − 2k + 1</span>
-      <div class="why">−k − k = −2k.</div>
-    </div>
-    <div class="tiny-step">
-      <strong>Multiply by the remaining (k − 1).</strong>
-      <span class="eq">(k − 1)<sup>3</sup> = (k<sup>2</sup> − 2k + 1)(k − 1)</span>
-      <div class="why">We had three factors. The first two have been replaced by their equal expanded form.</div>
-    </div>
-    <div class="tiny-step">
-      <strong>Distribute the k.</strong>
-      <span class="eq">k(k<sup>2</sup> − 2k + 1) = k<sup>3</sup> − 2k<sup>2</sup> + k</span>
-      <div class="why">k·k<sup>2</sup> = k<sup>3</sup>, k·(−2k) = −2k<sup>2</sup>, and k·1 = k.</div>
-    </div>
-    <div class="tiny-step">
-      <strong>Distribute the −1.</strong>
-      <span class="eq">−1(k<sup>2</sup> − 2k + 1) = −k<sup>2</sup> + 2k − 1</span>
-      <div class="why">Multiplying every term by −1 reverses its sign.</div>
-    </div>
-    <div class="tiny-step">
-      <strong>Add the two distributed parts.</strong>
-      <span class="eq">k<sup>3</sup> − 2k<sup>2</sup> + k − k<sup>2</sup> + 2k − 1</span>
-      <div class="why">This is exactly the distributive law applied to both terms of the second bracket.</div>
-    </div>
-    <div class="tiny-step">
-      <strong>Collect like terms.</strong>
-      <span class="eq">(k − 1)<sup>3</sup> = k<sup>3</sup> − 3k<sup>2</sup> + 3k − 1</span>
-      <div class="why">−2k<sup>2</sup> − k<sup>2</sup> = −3k<sup>2</sup>, and k + 2k = 3k.</div>
+    <div class="route-card">
+      <h4>Forward difference — also correct, but shifted</h4>
+      <div class="formula">(k + 1)<sup>3</sup> − k<sup>3</sup></div>
+      <p>“The stage after k minus stage k.”</p>
+      <p>For k = 1, it starts with 2<sup>3</sup> − 1<sup>3</sup>. For k = n, it ends with (n + 1)<sup>3</sup> − n<sup>3</sup>. It works, but it leaves the less convenient endpoints (n + 1)<sup>3</sup> − 1.</p>
     </div>
   </div>
 
-  <h3>Now subtract that smaller cube from k<sup>3</sup></h3>
-  <div class="step-list">
-    <div class="tiny-step">
-      <span class="eq">k<sup>3</sup> − (k − 1)<sup>3</sup></span>
-      <div class="why">This means “larger cube minus the immediately previous cube”.</div>
-    </div>
-    <div class="tiny-step">
-      <span class="eq">= k<sup>3</sup> − [k<sup>3</sup> − 3k<sup>2</sup> + 3k − 1]</span>
-      <div class="why">Replace (k − 1)<sup>3</sup> by the expanded expression just proved.</div>
-    </div>
-    <div class="tiny-step">
-      <span class="eq">= k<sup>3</sup> − k<sup>3</sup> + 3k<sup>2</sup> − 3k + 1</span>
-      <div class="why">The minus sign outside the square bracket multiplies every term inside by −1, so every sign inside reverses.</div>
-    </div>
-    <div class="tiny-step">
-      <span class="eq">= 3k<sup>2</sup> − 3k + 1</span>
-      <div class="why">k<sup>3</sup> − k<sup>3</sup> = 0, so those two terms disappear.</div>
-    </div>
+  <div class="callout green">
+    <span class="callout-title">Nothing mystical happened in choosing k − 1</span>
+    <p>We want one row for each target square k<sup>2</sup>, beginning at k = 1 and ending at k = n. Writing “current stage minus previous stage” makes the first previous stage 0 and the final current stage n. It is simply the cleanest indexing choice.</p>
   </div>
 
-  <div class="formula big green">k<sup>3</sup> − (k − 1)<sup>3</sup> = 3k<sup>2</sup> − 3k + 1.</div>
+  <h3>4D. Count the cube shell exactly, with no overlap and no missing pieces</h3>
+  <p>A k × k × k cube contains k<sup>3</sup> unit cubes. The previous (k − 1) × (k − 1) × (k − 1) cube contains (k − 1)<sup>3</sup>. The difference is precisely the new shell.</p>
 
-  <h3>A visual meaning of the same identity</h3>
-  <p>A k × k × k cube contains k<sup>3</sup> unit cubes. Remove the inner (k − 1) × (k − 1) × (k − 1) cube. The remaining shell can be split into three non-overlapping slabs.</p>
+  <div class="coordinate-proof">
+    <span class="small-label">Rigorous partition of the shell</span>
+    <p>Give each unit cube coordinates (x, y, z), where each coordinate is one of 1, 2, …, k. The old inner cube consists of cubes with x, y and z all at most k − 1. Therefore a cube is in the new shell exactly when at least one coordinate equals k.</p>
+    <ol>
+      <li><strong>Piece A:</strong> z = k. The x-coordinate has k choices and y has k choices, so there are k × k = k<sup>2</sup> cubes.</li>
+      <li><strong>Piece B:</strong> z is not k, but y = k. Then z has k − 1 choices and x has k choices, giving k(k − 1) cubes.</li>
+      <li><strong>Piece C:</strong> neither z nor y is k, so a shell cube not already counted must have x = k. Both y and z have k − 1 choices, giving (k − 1)<sup>2</sup> cubes.</li>
+    </ol>
+    <p><strong>Coverage:</strong> every shell cube has at least one coordinate equal to k, so it enters A, B or C. <strong>No overlap:</strong> B explicitly excludes A, and C explicitly excludes both A and B. Every shell cube is therefore counted exactly once.</p>
+  </div>
+
   <div class="controls">
     <label for="shellK">Choose k:</label>
     <input id="shellK" type="range" min="2" max="8" value="4">
@@ -660,9 +868,165 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
   </div>
   <div id="shellOutput" class="output"></div>
 
+  <div class="formula big">k<sup>3</sup> − (k − 1)<sup>3</sup> = k<sup>2</sup> + k(k − 1) + (k − 1)<sup>2</sup>.</div>
+
+  <h4>Expand the three geometric pieces one tiny step at a time</h4>
+  <div class="step-list">
+    <div class="tiny-step">
+      <strong>Keep Piece A as it is.</strong>
+      <span class="eq">k<sup>2</sup> = k<sup>2</sup></span>
+      <div class="why">The top sheet is already a k by k square.</div>
+    </div>
+    <div class="tiny-step">
+      <strong>Expand Piece B.</strong>
+      <span class="eq">k(k − 1) = k·k − k·1 = k<sup>2</sup> − k</span>
+      <div class="why">Distribute k across the bracket.</div>
+    </div>
+    <div class="tiny-step">
+      <strong>Expand Piece C.</strong>
+      <span class="eq">(k − 1)<sup>2</sup> = (k − 1)(k − 1) = k<sup>2</sup> − k − k + 1 = k<sup>2</sup> − 2k + 1</span>
+      <div class="why">Every term in the first bracket multiplies every term in the second.</div>
+    </div>
+    <div class="tiny-step">
+      <strong>Replace each piece by its equal expanded form.</strong>
+      <span class="eq">k<sup>2</sup> + k(k − 1) + (k − 1)<sup>2</sup> = k<sup>2</sup> + (k<sup>2</sup> − k) + (k<sup>2</sup> − 2k + 1)</span>
+      <div class="why">This is substitution of equal expressions.</div>
+    </div>
+    <div class="tiny-step">
+      <strong>Remove the grouping brackets without changing signs.</strong>
+      <span class="eq">k<sup>2</sup> + k<sup>2</sup> − k + k<sup>2</sup> − 2k + 1</span>
+      <div class="why">Every bracket is preceded by a plus sign, so the signs inside remain unchanged.</div>
+    </div>
+    <div class="tiny-step">
+      <strong>Collect the three square terms and the two linear terms.</strong>
+      <span class="eq">3k<sup>2</sup> − 3k + 1</span>
+      <div class="why">k<sup>2</sup> + k<sup>2</sup> + k<sup>2</sup> = 3k<sup>2</sup>, while −k − 2k = −3k.</div>
+    </div>
+  </div>
+
+  <div class="formula big green">k<sup>3</sup> − (k − 1)<sup>3</sup> = 3k<sup>2</sup> − 3k + 1.</div>
+
+  <h3>4E. Independent algebraic audit of the same identity</h3>
+  <p>The geometric partition already proves the identity. We now multiply the brackets as an independent check, so the visual proof and the symbolic proof support one another.</p>
+
+  <div class="step-list">
+    <div class="tiny-step">
+      <strong>Write the meaning of the cube.</strong>
+      <span class="eq">(k − 1)<sup>3</sup> = (k − 1)(k − 1)(k − 1)</span>
+      <div class="why">A cube means three identical factors.</div>
+    </div>
+    <div class="tiny-step">
+      <strong>Multiply the first two factors.</strong>
+      <span class="eq">(k − 1)(k − 1) = k·k + k(−1) + (−1)k + (−1)(−1)</span>
+      <div class="why">There are four products: first–first, first–second, second–first and second–second.</div>
+    </div>
+    <div class="tiny-step">
+      <strong>Evaluate and collect those products.</strong>
+      <span class="eq">k<sup>2</sup> − k − k + 1 = k<sup>2</sup> − 2k + 1</span>
+      <div class="why">The two −k terms combine to −2k.</div>
+    </div>
+    <div class="tiny-step">
+      <strong>Multiply by the remaining factor.</strong>
+      <span class="eq">(k<sup>2</sup> − 2k + 1)(k − 1)</span>
+      <div class="why">The first two factors have been replaced by an equal expression; the third factor remains.</div>
+    </div>
+    <div class="tiny-step">
+      <strong>Distribute k and then distribute −1.</strong>
+      <span class="eq">[k<sup>3</sup> − 2k<sup>2</sup> + k] + [−k<sup>2</sup> + 2k − 1]</span>
+      <div class="why">Every term in k − 1 multiplies every term in k<sup>2</sup> − 2k + 1.</div>
+    </div>
+    <div class="tiny-step">
+      <strong>Collect like terms.</strong>
+      <span class="eq">(k − 1)<sup>3</sup> = k<sup>3</sup> − 3k<sup>2</sup> + 3k − 1</span>
+      <div class="why">−2k<sup>2</sup> − k<sup>2</sup> = −3k<sup>2</sup>, and k + 2k = 3k.</div>
+    </div>
+    <div class="tiny-step">
+      <strong>Substitute this whole expansion into the smaller-cube position.</strong>
+      <span class="eq">k<sup>3</sup> − (k − 1)<sup>3</sup> = k<sup>3</sup> − [k<sup>3</sup> − 3k<sup>2</sup> + 3k − 1]</span>
+      <div class="why">Only the expression (k − 1)<sup>3</sup> is replaced; the leading k<sup>3</sup> stays where it is.</div>
+    </div>
+    <div class="tiny-step">
+      <strong>Apply the outside minus sign to every term inside the bracket.</strong>
+      <span class="eq">= k<sup>3</sup> − k<sup>3</sup> + 3k<sup>2</sup> − 3k + 1</span>
+      <div class="why">Subtracting the bracket means multiplying every inside term by −1. That reverses all four signs.</div>
+    </div>
+    <div class="tiny-step">
+      <strong>Cancel the equal cubes.</strong>
+      <span class="eq">= 3k<sup>2</sup> − 3k + 1</span>
+      <div class="why">k<sup>3</sup> − k<sup>3</sup> = 0.</div>
+    </div>
+  </div>
+
+  <h3>4F. Exactly what does “replace k by k + 1” mean?</h3>
+  <p>This is a common source of confusion. To make the substitution unambiguous, temporarily write the identity with a neutral placeholder r:</p>
+  <div class="formula"><span class="token-r">r</span><sup>3</sup> − (<span class="token-r">r</span> − 1)<sup>3</sup> = 3<span class="token-r">r</span><sup>2</sup> − 3<span class="token-r">r</span> + 1.</div>
+  <p>The rule is true for every permitted value of r. To create the row after k, set <span class="token-r">r</span> equal to <span class="token-next">k + 1</span> and replace <strong>every occurrence</strong> of r—not just the first one.</p>
+
+  <table class="substitution-map">
+    <thead><tr><th>Part of the r-identity</th><th>After setting r = k + 1</th><th>Simplified</th></tr></thead>
+    <tbody>
+      <tr><td>r</td><td>k + 1</td><td>k + 1</td></tr>
+      <tr><td>r − 1</td><td>(k + 1) − 1</td><td>k</td></tr>
+      <tr><td>r<sup>3</sup></td><td>(k + 1)<sup>3</sup></td><td>(k + 1)<sup>3</sup></td></tr>
+      <tr><td>(r − 1)<sup>3</sup></td><td>[(k + 1) − 1]<sup>3</sup></td><td>k<sup>3</sup></td></tr>
+      <tr><td>3r<sup>2</sup></td><td>3(k + 1)<sup>2</sup></td><td>3(k + 1)<sup>2</sup></td></tr>
+      <tr><td>−3r</td><td>−3(k + 1)</td><td>−3k − 3</td></tr>
+    </tbody>
+  </table>
+
+  <div class="equation-stack">
+    <span class="line">r<sup>3</sup> − (r − 1)<sup>3</sup> = 3r<sup>2</sup> − 3r + 1</span>
+    <span class="line">r = k + 1 gives:</span>
+    <span class="line">(k + 1)<sup>3</sup> − [(k + 1) − 1]<sup>3</sup> = 3(k + 1)<sup>2</sup> − 3(k + 1) + 1</span>
+    <span class="line">(k + 1)<sup>3</sup> − k<sup>3</sup> = 3(k<sup>2</sup> + 2k + 1) − 3k − 3 + 1</span>
+    <span class="line">= 3k<sup>2</sup> + 6k + 3 − 3k − 3 + 1</span>
+    <span class="line">= 3k<sup>2</sup> + 3k + 1.</span>
+  </div>
+
+  <div class="substitution-warning">
+    <strong>Do not mix the two identities.</strong>
+    <p>The backward version is k<sup>3</sup> − (k − 1)<sup>3</sup> = 3k<sup>2</sup> − 3k + 1. The forward version is (k + 1)<sup>3</sup> − k<sup>3</sup> = 3k<sup>2</sup> + 3k + 1. They count the same kind of shell with different labels. In the main proof we use only the backward version because it aligns cleanly with k = 1, 2, …, n.</p>
+  </div>
+
+  <h4>Numerical substitution laboratory</h4>
+  <div class="controls">
+    <label for="subK">Choose the value put into every k-position:</label>
+    <input id="subK" type="range" min="1" max="8" value="3">
+    <output id="subKValue" for="subK">3</output>
+  </div>
+  <div id="subOutput" class="output" aria-live="polite"></div>
+
+  <h3>4G. Why this identity is useful even though it is not equal to k<sup>2</sup> by itself</h3>
+  <p>The shell identity contains the exact target term 3k<sup>2</sup>, plus only a linear correction −3k and a constant correction +1. Those corrections are deliberately manageable: we have already proved how to add 1 + 2 + ··· + n, and n copies of 1 simply add to n.</p>
+
+  <div class="step-list">
+    <div class="tiny-step">
+      <strong>Start from the shell identity.</strong>
+      <span class="eq">k<sup>3</sup> − (k − 1)<sup>3</sup> = 3k<sup>2</sup> − 3k + 1</span>
+      <div class="why">This has been proved geometrically and audited algebraically.</div>
+    </div>
+    <div class="tiny-step">
+      <strong>Add 3k and subtract 1 on both sides.</strong>
+      <span class="eq">k<sup>3</sup> − (k − 1)<sup>3</sup> + 3k − 1 = 3k<sup>2</sup></span>
+      <div class="why">On the right, −3k + 3k = 0 and +1 − 1 = 0.</div>
+    </div>
+    <div class="tiny-step">
+      <strong>Divide by 3.</strong>
+      <span class="eq">k<sup>2</sup> = <span class="frac"><span class="top">k<sup>3</sup> − (k − 1)<sup>3</sup> + 3k − 1</span><span class="bottom">3</span></span></span>
+      <div class="why">This explicitly writes one square as a neighbouring-cube change plus two simpler corrections.</div>
+    </div>
+  </div>
+
+  <div class="discovery-chain" aria-label="The complete discovery chain">
+    <div class="chain-step">Make a long sum collapse using neighbouring changes</div>
+    <div class="chain-step">Seek growth containing an area term k<sup>2</sup></div>
+    <div class="chain-step">Cube growth is made from area-sized sheets</div>
+    <div class="chain-step">Its corrections involve only Σk and n copies of 1</div>
+  </div>
+
   <div class="callout green">
-    <span class="callout-title">Why the visual and algebra agree</span>
-    <p>The shell count is k<sup>2</sup> + k(k − 1) + (k − 1)<sup>2</sup>. Expanding those three pieces gives k<sup>2</sup> + (k<sup>2</sup> − k) + (k<sup>2</sup> − 2k + 1) = 3k<sup>2</sup> − 3k + 1. That is exactly the algebraic identity above.</p>
+    <span class="callout-title">The cube method has now been motivated, not merely presented</span>
+    <p>We did not choose cubes because we already knew the answer. We first designed the cancellation we wanted, then examined the growth of lines, squares and cubes, identified cube growth as the first natural source of square-sized pieces, counted that shell exactly, and confirmed that the remaining correction terms were sums we could already handle.</p>
   </div>
 </section>
 
@@ -672,6 +1036,26 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
   <p>Let the unknown square total be</p>
   <div class="formula">S<sub>4</sub> = 1<sup>2</sup> + 2<sup>2</sup> + 3<sup>2</sup> + 4<sup>2</sup>.</div>
   <p>Use the identity k<sup>3</sup> − (k − 1)<sup>3</sup> = 3k<sup>2</sup> − 3k + 1 once for each k from 1 to 4.</p>
+
+  <h3>First see exactly how one row is manufactured: set k = 2 everywhere</h3>
+  <table class="substitution-map">
+    <thead><tr><th>Original part</th><th>Replace k by 2</th><th>Evaluate</th></tr></thead>
+    <tbody>
+      <tr><td>k<sup>3</sup></td><td>2<sup>3</sup></td><td>8</td></tr>
+      <tr><td>(k − 1)<sup>3</sup></td><td>(2 − 1)<sup>3</sup></td><td>1<sup>3</sup> = 1</td></tr>
+      <tr><td>3k<sup>2</sup></td><td>3(2<sup>2</sup>)</td><td>3 × 4 = 12</td></tr>
+      <tr><td>−3k</td><td>−3(2)</td><td>−6</td></tr>
+      <tr><td>+1</td><td>+1</td><td>+1</td></tr>
+    </tbody>
+  </table>
+  <div class="equation-stack">
+    <span class="line">k<sup>3</sup> − (k − 1)<sup>3</sup> = 3k<sup>2</sup> − 3k + 1</span>
+    <span class="line">k = 2:</span>
+    <span class="line">2<sup>3</sup> − (2 − 1)<sup>3</sup> = 3(2<sup>2</sup>) − 3(2) + 1</span>
+    <span class="line">8 − 1 = 12 − 6 + 1</span>
+    <span class="line">7 = 7.</span>
+  </div>
+  <div class="callout amber"><span class="callout-title">The substitution rule</span><p>Every occurrence of k is replaced by the same chosen value. The brackets around 2 − 1 are kept until that subtraction is evaluated. We never replace only some k symbols.</p></div>
 
   <div class="pair-table-wrap">
     <table class="identity-table">
@@ -684,6 +1068,26 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
       </tbody>
     </table>
   </div>
+
+  <h3>The same four rows as an equality ledger</h3>
+  <p>Each row says “left side equals the sum of the three right-hand columns”. The TOTAL row is obtained by adding down each column.</p>
+  <div class="pair-table-wrap">
+    <table class="ledger-table" aria-label="Numerical equality ledger for n equals four">
+      <thead>
+        <tr><th>k</th><th>k<sup>3</sup> − (k − 1)<sup>3</sup></th><th class="equals-cell">=</th><th>3k<sup>2</sup></th><th>−3k</th><th>+1</th><th>Right-row total</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td class="left-cell">1</td><td class="equals-cell">=</td><td class="square-cell">3</td><td class="linear-cell">−3</td><td class="one-cell">1</td><td>1</td></tr>
+        <tr><td>2</td><td class="left-cell">7</td><td class="equals-cell">=</td><td class="square-cell">12</td><td class="linear-cell">−6</td><td class="one-cell">1</td><td>7</td></tr>
+        <tr><td>3</td><td class="left-cell">19</td><td class="equals-cell">=</td><td class="square-cell">27</td><td class="linear-cell">−9</td><td class="one-cell">1</td><td>19</td></tr>
+        <tr><td>4</td><td class="left-cell">37</td><td class="equals-cell">=</td><td class="square-cell">48</td><td class="linear-cell">−12</td><td class="one-cell">1</td><td>37</td></tr>
+      </tbody>
+      <tfoot>
+        <tr><td>TOTAL</td><td>1 + 7 + 19 + 37 = 64</td><td class="equals-cell">=</td><td>3 + 12 + 27 + 48 = 90</td><td>−3 − 6 − 9 − 12 = −30</td><td>4</td><td>90 − 30 + 4 = 64</td></tr>
+      </tfoot>
+    </table>
+  </div>
+  <p>The square column is 3(1<sup>2</sup> + 2<sup>2</sup> + 3<sup>2</sup> + 4<sup>2</sup>) = 3S<sub>4</sub>. The linear column is −3(1 + 2 + 3 + 4) = −3T<sub>4</sub>. The ones column contains four copies of 1.</p>
 
   <h3>Add all four equations</h3>
   <div class="formula">(1<sup>3</sup> − 0<sup>3</sup>) + (2<sup>3</sup> − 1<sup>3</sup>) + (3<sup>3</sup> − 2<sup>3</sup>) + (4<sup>3</sup> − 3<sup>3</sup>)</div>
@@ -719,7 +1123,30 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
   <div class="formula">S<sub>n</sub> = 1<sup>2</sup> + 2<sup>2</sup> + ··· + n<sup>2</sup></div>
   <div class="formula">T<sub>n</sub> = 1 + 2 + ··· + n = <span class="frac"><span class="top">n(n + 1)</span><span class="bottom">2</span></span></div>
 
-  <h3>6A. Write the cube identity for every counter value</h3>
+  <h3>6A. Generate every row without confusing k, k + 1 and n</h3>
+  <p>Use a neutral placeholder r in the master identity:</p>
+  <div class="formula">r<sup>3</sup> − (r − 1)<sup>3</sup> = 3r<sup>2</sup> − 3r + 1.</div>
+  <p>A row is created by choosing one value for r and replacing every r by that value.</p>
+
+  <table class="substitution-map">
+    <thead><tr><th>Which row?</th><th>Substitution made everywhere</th><th>Resulting left side</th><th>Why this matters</th></tr></thead>
+    <tbody>
+      <tr><td>Row k</td><td>r = k</td><td>k<sup>3</sup> − (k − 1)<sup>3</sup></td><td>Contains +k<sup>3</sup>.</td></tr>
+      <tr><td>Next row</td><td>r = k + 1</td><td>(k + 1)<sup>3</sup> − [(k + 1) − 1]<sup>3</sup> = (k + 1)<sup>3</sup> − k<sup>3</sup></td><td>Contains −k<sup>3</sup>, which cancels the +k<sup>3</sup> in row k.</td></tr>
+      <tr><td>Final row</td><td>r = n</td><td>n<sup>3</sup> − (n − 1)<sup>3</sup></td><td>Leaves +n<sup>3</sup> as the final endpoint.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="equation-stack">
+    <span class="line">Row k: &nbsp; k<sup>3</sup> − (k − 1)<sup>3</sup> = 3k<sup>2</sup> − 3k + 1</span>
+    <span class="line">Row k + 1: &nbsp; (k + 1)<sup>3</sup> − [(k + 1) − 1]<sup>3</sup> = 3(k + 1)<sup>2</sup> − 3(k + 1) + 1</span>
+    <span class="line">Since (k + 1) − 1 = k, the next left side is (k + 1)<sup>3</sup> − k<sup>3</sup>.</span>
+    <span class="line">Therefore the +k<sup>3</sup> from row k is followed by −k<sup>3</sup> in row k + 1.</span>
+  </div>
+
+  <div class="substitution-warning"><strong>The symbol k is a row label, not one fixed number throughout the whole table.</strong><p>In row 1 the counter value is 1; in row 2 it is 2; and so on. When we discuss “row k” and “row k + 1”, k temporarily names any adjacent pair of rows. The actual sum still runs through every whole-number value from 1 to n exactly once.</p></div>
+
+  <h4>Now display the first rows and the final row</h4>
   <div class="formula">For k = 1: &nbsp; 1<sup>3</sup> − 0<sup>3</sup> = 3·1<sup>2</sup> − 3·1 + 1</div>
   <div class="formula">For k = 2: &nbsp; 2<sup>3</sup> − 1<sup>3</sup> = 3·2<sup>2</sup> − 3·2 + 1</div>
   <div class="formula">For k = 3: &nbsp; 3<sup>3</sup> − 2<sup>3</sup> = 3·3<sup>2</sup> − 3·3 + 1</div>
@@ -755,6 +1182,22 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
   </div>
   <div class="formula big">The total right side is 3S<sub>n</sub> − 3T<sub>n</sub> + n.</div>
 
+  <h4>Put the whole argument into one symbolic equality ledger</h4>
+  <div class="pair-table-wrap">
+    <table class="ledger-table" aria-label="General equality ledger for the sum of squares derivation">
+      <thead><tr><th>Counter value</th><th>Neighbouring-cube side</th><th class="equals-cell">=</th><th>Square column</th><th>Linear column</th><th>Ones column</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td class="left-cell">1<sup>3</sup> − 0<sup>3</sup></td><td class="equals-cell">=</td><td class="square-cell">3·1<sup>2</sup></td><td class="linear-cell">−3·1</td><td class="one-cell">1</td></tr>
+        <tr><td>2</td><td class="left-cell">2<sup>3</sup> − 1<sup>3</sup></td><td class="equals-cell">=</td><td class="square-cell">3·2<sup>2</sup></td><td class="linear-cell">−3·2</td><td class="one-cell">1</td></tr>
+        <tr><td>3</td><td class="left-cell">3<sup>3</sup> − 2<sup>3</sup></td><td class="equals-cell">=</td><td class="square-cell">3·3<sup>2</sup></td><td class="linear-cell">−3·3</td><td class="one-cell">1</td></tr>
+        <tr><td>⋮</td><td class="left-cell">⋮</td><td class="equals-cell">=</td><td class="square-cell">⋮</td><td class="linear-cell">⋮</td><td class="one-cell">⋮</td></tr>
+        <tr><td>n</td><td class="left-cell">n<sup>3</sup> − (n − 1)<sup>3</sup></td><td class="equals-cell">=</td><td class="square-cell">3n<sup>2</sup></td><td class="linear-cell">−3n</td><td class="one-cell">1</td></tr>
+      </tbody>
+      <tfoot><tr><td>TOTAL</td><td>n<sup>3</sup></td><td class="equals-cell">=</td><td>3S<sub>n</sub></td><td>−3T<sub>n</sub></td><td>n</td></tr></tfoot>
+    </table>
+  </div>
+  <p>The TOTAL row is not guessed: the previous subsections proved each of its four entries separately. Reading across that row gives the master equation directly.</p>
+
   <h3>6C. Equate the two totals</h3>
   <p>The summed left side and summed right side came from adding the two sides of the same collection of true equations, so they are equal:</p>
   <div class="formula big amber">n<sup>3</sup> = 3S<sub>n</sub> − 3T<sub>n</sub> + n.</div>
@@ -783,12 +1226,17 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
     <div class="tiny-step">
       <strong>Substitute the separately proved ordinary-sum formula.</strong>
       <span class="eq">3S<sub>n</sub> = n<sup>3</sup> + 3<span class="frac"><span class="top">n(n + 1)</span><span class="bottom">2</span></span> − n</span>
-      <div class="why">T<sub>n</sub> equals n(n + 1)/2, so replacing T<sub>n</sub> by that equal quantity is legal.</div>
+      <div class="why">The entire symbol T<sub>n</sub> is replaced by the equal quantity n(n + 1)/2. The other n symbols are not being “substituted”; they remain the same stopping number.</div>
     </div>
     <div class="tiny-step">
-      <strong>Put every term over the common denominator 2.</strong>
-      <span class="eq">n<sup>3</sup> = <span class="frac"><span class="top">2n<sup>3</sup></span><span class="bottom">2</span></span>, &nbsp; n = <span class="frac"><span class="top">2n</span><span class="bottom">2</span></span></span>
-      <div class="why">Multiplying a quantity by 2/2 does not change it because 2/2 = 1.</div>
+      <strong>Rewrite each whole term as an equivalent fraction with denominator 2.</strong>
+      <span class="eq">n<sup>3</sup> = <span class="frac"><span class="top">2n<sup>3</sup></span><span class="bottom">2</span></span>, &nbsp; −n = −<span class="frac"><span class="top">2n</span><span class="bottom">2</span></span></span>
+      <div class="why">For example, n<sup>3</sup> × 2/2 = 2n<sup>3</sup>/2. Multiplying by 2/2 multiplies by 1, so the value is unchanged. The negative sign on −n remains negative.</div>
+    </div>
+    <div class="tiny-step">
+      <strong>Show the complete line before combining anything.</strong>
+      <span class="eq">3S<sub>n</sub> = <span class="frac"><span class="top">2n<sup>3</sup></span><span class="bottom">2</span></span> + <span class="frac"><span class="top">3n(n + 1)</span><span class="bottom">2</span></span> − <span class="frac"><span class="top">2n</span><span class="bottom">2</span></span></span>
+      <div class="why">All three terms now have exactly the same denominator, so their numerators may be combined while their signs are preserved.</div>
     </div>
     <div class="tiny-step">
       <strong>Combine the three fractions.</strong>
@@ -933,15 +1381,33 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
   <h3>Check the starting value n = 1</h3>
   <div class="formula">F<sub>1</sub> = <span class="frac"><span class="top">1·2·3</span><span class="bottom">6</span></span> = <span class="frac"><span class="top">6</span><span class="bottom">6</span></span> = 1 = 1<sup>2</sup>.</div>
 
+  <h3>Before checking the gain: derive F<sub>n−1</sub> without a substitution jump</h3>
+  <p>The formula F<sub>n</sub> uses n as its input label. To avoid the confusing instruction “replace n by n − 1 everywhere” while n is still visible inside that replacement, first write the same rule with a neutral input letter r:</p>
+  <div class="formula">F<sub>r</sub> = <span class="frac"><span class="top">r(r + 1)(2r + 1)</span><span class="bottom">6</span></span>.</div>
+  <p>The previous stage is obtained by setting r = n − 1. Every r-position receives the complete bracket n − 1.</p>
+
+  <table class="substitution-map">
+    <thead><tr><th>Factor in F<sub>r</sub></th><th>After setting r = n − 1</th><th>Simplified factor</th></tr></thead>
+    <tbody>
+      <tr><td>r</td><td>n − 1</td><td>n − 1</td></tr>
+      <tr><td>r + 1</td><td>(n − 1) + 1</td><td>n</td></tr>
+      <tr><td>2r + 1</td><td>2(n − 1) + 1</td><td>2n − 2 + 1 = 2n − 1</td></tr>
+    </tbody>
+  </table>
+  <div class="equation-stack">
+    <span class="line">F<sub>r</sub> = r(r + 1)(2r + 1)/6</span>
+    <span class="line">Set r = n − 1:</span>
+    <span class="line">F<sub>n−1</sub> = (n − 1)[(n − 1) + 1][2(n − 1) + 1]/6</span>
+    <span class="line">F<sub>n−1</sub> = (n − 1)n(2n − 1)/6.</span>
+  </div>
+
   <h3>Check the amount gained from n − 1 to n</h3>
   <p>The actual square sum gains n<sup>2</sup> at this step, because</p>
   <div class="formula">(1<sup>2</sup> + ··· + (n − 1)<sup>2</sup> + n<sup>2</sup>) − (1<sup>2</sup> + ··· + (n − 1)<sup>2</sup>) = n<sup>2</sup>.</div>
   <p>Now calculate the gain in the proposed formula.</p>
 
   <div class="step-list">
-    <div class="tiny-step"><span class="eq">F<sub>n−1</sub> = <span class="frac"><span class="top">(n − 1)n(2(n − 1) + 1)</span><span class="bottom">6</span></span></span><div class="why">Replace n by n − 1 everywhere in the formula.</div></div>
-    <div class="tiny-step"><span class="eq">2(n − 1) + 1 = 2n − 2 + 1 = 2n − 1</span><div class="why">Distribute the 2, then combine −2 + 1.</div></div>
-    <div class="tiny-step"><span class="eq">F<sub>n−1</sub> = <span class="frac"><span class="top">(n − 1)n(2n − 1)</span><span class="bottom">6</span></span></span><div class="why">Substitute the simplified last factor.</div></div>
+    <div class="tiny-step"><span class="eq">F<sub>n</sub> = <span class="frac"><span class="top">n(n + 1)(2n + 1)</span><span class="bottom">6</span></span>, &nbsp; F<sub>n−1</sub> = <span class="frac"><span class="top">(n − 1)n(2n − 1)</span><span class="bottom">6</span></span></span><div class="why">The previous-stage expression has just been derived factor by factor in the substitution map above.</div></div>
     <div class="tiny-step"><span class="eq">F<sub>n</sub> − F<sub>n−1</sub> = <span class="frac"><span class="top">n(n + 1)(2n + 1) − (n − 1)n(2n − 1)</span><span class="bottom">6</span></span></span><div class="why">The denominators are the same, so subtract the numerators.</div></div>
     <div class="tiny-step"><span class="eq">= <span class="frac"><span class="top">n[(n + 1)(2n + 1) − (n − 1)(2n − 1)]</span><span class="bottom">6</span></span></span><div class="why">Both numerator terms contain n, so factor it out.</div></div>
     <div class="tiny-step"><span class="eq">(n + 1)(2n + 1) = 2n<sup>2</sup> + 3n + 1</span><div class="why">The four products are 2n<sup>2</sup>, n, 2n, and 1; n + 2n = 3n.</div></div>
@@ -978,6 +1444,10 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
   <div id="layersOutput" class="output"></div>
 
   <h3>Common points of confusion</h3>
+  <details><summary>How could anyone have thought of using cubes?</summary><div><p>The route is systematic. First seek neighbouring differences because they cancel when added. Then ask what growing object has a one-step increase made from areas, since k<sup>2</sup> is an area. A line grows by a constant; a square grows by an edge-shaped linear border; a cube grows by face-shaped sheets whose counts involve products of two lengths. Cube growth is therefore the first simple geometric growth rule that naturally contains square terms.</p></div></details>
+  <details><summary>Why not use (k + 1)<sup>3</sup> − k<sup>3</sup>?</summary><div><p>You may: it equals 3k<sup>2</sup> + 3k + 1 and also telescopes. The backward form k<sup>3</sup> − (k − 1)<sup>3</sup> is chosen because, as k runs from 1 to n, the endpoints are 0<sup>3</sup> and n<sup>3</sup>. The forward form would leave 1<sup>3</sup> and (n + 1)<sup>3</sup>, creating more shifted algebra.</p></div></details>
+  <details><summary>What exactly happens when k is replaced by k + 1?</summary><div><p>Every occurrence of the placeholder is replaced by the complete bracket k + 1. Thus k − 1 becomes (k + 1) − 1 = k; k<sup>3</sup> becomes (k + 1)<sup>3</sup>; 3k<sup>2</sup> becomes 3(k + 1)<sup>2</sup>; and −3k becomes −3(k + 1). Replacing only some occurrences would not be a valid substitution.</p></div></details>
+  <details><summary>Why does the next row contain −k<sup>3</sup>?</summary><div><p>The next row uses counter value k + 1. Its “previous cube” is therefore [(k + 1) − 1]<sup>3</sup> = k<sup>3</sup>. Because the identity subtracts the previous cube, that term is −k<sup>3</sup>. It cancels the +k<sup>3</sup> at the start of the current row.</p></div></details>
   <details><summary>Why does the counter k disappear from the final answer?</summary><div><p>k is a temporary counter used inside the addition. After every value k = 1, 2, …, n has been processed, the only free stopping number left is n. This is similar to saying “add every item in this box”: the temporary item label is gone after the total is formed.</p></div></details>
   <details><summary>Why are there n copies of +1?</summary><div><p>We write one identity for each k-value. The allowed values are 1, 2, 3, …, n, which is a list of n values. Each identity contributes one +1, so their total is 1 + 1 + ··· + 1 with n terms, equal to n.</p></div></details>
   <details><summary>Why do the cubes cancel?</summary><div><p>Every intermediate cube m<sup>3</sup>, where 1 ≤ m ≤ n − 1, appears once positively as the first term of m<sup>3</sup> − (m − 1)<sup>3</sup>, and once negatively as the second term of (m + 1)<sup>3</sup> − m<sup>3</sup>. Equal positive and negative copies sum to zero.</p></div></details>
@@ -987,8 +1457,8 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
 
 </main>
 <footer>
-  <p><strong>Core conclusion:</strong> the formula is forced by the difference-of-neighbouring-cubes identity and the separately proved ordinary-sum formula.</p>
-  <p class="print-note">This page is self-contained and uses no external libraries or internet connection.</p>
+  <p><strong>Core conclusion:</strong> neighbouring differences were chosen because they telescope; cubes arose naturally because cube growth is made from area-sized sheets; and the final formula was then forced by that shell identity together with the separately proved ordinary-sum formula.</p>
+  <p class="print-note">Natural-cube-discovery edition. This page is self-contained and uses no external libraries or internet connection.</p>
 </footer>
 
 <script>
@@ -1059,6 +1529,75 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
     return `<div class="cell-grid ${rows !== cols ? "rect" : ""}" style="grid-template-columns:repeat(${cols},1fr);grid-template-rows:repeat(${rows},1fr)" aria-label="${label}">${cells}</div>`;
   }
 
+  function squareGrowthGrid(k){
+    const cells = [];
+    for(let row = 0; row < k; row++){
+      for(let col = 0; col < k; col++){
+        const isNew = row === k - 1 || col === k - 1;
+        cells.push(`<span class="${isNew ? "new-cell" : "old-cell"}"></span>`);
+      }
+    }
+    return `<div class="growth-grid" style="grid-template-columns:repeat(${k},1fr);grid-template-rows:repeat(${k},1fr)" aria-label="A ${k} by ${k} square with the new last row and last column highlighted">${cells.join("")}</div>`;
+  }
+
+  function renderGrowth(){
+    const k = Number($("growthK").value);
+    $("growthKValue").textContent = k;
+    const lineUnits = Array.from({length:k},(_,i)=>`<span class="line-unit ${i === k-1 ? "new" : ""}"></span>`).join("");
+    const squareOld = (k-1) * (k-1);
+    const squareNew = k*k - squareOld;
+    const cubeOld = (k-1) ** 3;
+    const cubeNew = k ** 3 - cubeOld;
+    $("growthOutput").innerHTML = `
+      <div class="growth-lab-grid">
+        <div class="growth-card">
+          <h4>Line: ${k-1} → ${k}</h4>
+          <div class="line-units">${lineUnits}</div>
+          <div class="formula">${k} − ${k-1} = <strong>1</strong></div>
+          <p>Only one new unit length is added.</p>
+        </div>
+        <div class="growth-card">
+          <h4>Square: ${k-1} × ${k-1} → ${k} × ${k}</h4>
+          ${squareGrowthGrid(k)}
+          <div class="formula">${k}<sup>2</sup> − ${k-1}<sup>2</sup> = ${k*k} − ${squareOld} = <strong>${squareNew}</strong></div>
+          <p>Highlighted border: ${k} cells in the last row plus ${k-1} further cells in the last column, so ${k} + ${k-1} = ${2*k-1}.</p>
+        </div>
+        <div class="growth-card">
+          <h4>Cube: ${k-1}<sup>3</sup> → ${k}<sup>3</sup></h4>
+          <div class="formula">${k}<sup>3</sup> − ${k-1}<sup>3</sup> = ${k**3} − ${cubeOld} = <strong>${cubeNew}</strong></div>
+          <p>Exact shell pieces: ${k}<sup>2</sup> + ${k}(${k-1}) + ${k-1}<sup>2</sup> = ${k*k} + ${k*(k-1)} + ${(k-1)*(k-1)} = ${cubeNew}.</p>
+          <p>The growth is assembled from two-dimensional sheets, so square terms appear.</p>
+        </div>
+      </div>`;
+  }
+
+  function renderSubstitution(){
+    const k = Number($("subK").value);
+    $("subKValue").textContent = k;
+    const previous = k - 1;
+    const left = k ** 3 - previous ** 3;
+    const squarePart = 3 * k * k;
+    const linearPart = -3 * k;
+    const right = squarePart + linearPart + 1;
+    $("subOutput").innerHTML = `
+      <table class="substitution-map">
+        <thead><tr><th>Position in the identity</th><th>After k = ${k}</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>k<sup>3</sup></td><td>${k}<sup>3</sup></td><td>${k**3}</td></tr>
+          <tr><td>(k − 1)<sup>3</sup></td><td>(${k} − 1)<sup>3</sup> = ${previous}<sup>3</sup></td><td>${previous**3}</td></tr>
+          <tr><td>3k<sup>2</sup></td><td>3(${k}<sup>2</sup>)</td><td>${squarePart}</td></tr>
+          <tr><td>−3k</td><td>−3(${k})</td><td>${linearPart}</td></tr>
+          <tr><td>+1</td><td>+1</td><td>1</td></tr>
+        </tbody>
+      </table>
+      <div class="equation-stack">
+        <span class="line">${k}<sup>3</sup> − (${k} − 1)<sup>3</sup> = 3(${k}<sup>2</sup>) − 3(${k}) + 1</span>
+        <span class="line">${k**3} − ${previous**3} = ${squarePart} ${linearPart < 0 ? "− " + Math.abs(linearPart) : "+ " + linearPart} + 1</span>
+        <span class="line">${left} = ${right}.</span>
+      </div>
+      <p><strong>Check:</strong> both sides equal ${left}. Every k-position received the same number ${k}.</p>`;
+  }
+
   function renderShell(){
     const k = Number($("shellK").value);
     $("shellKValue").textContent = k;
@@ -1075,7 +1614,7 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
         <div class="piece piece-c"><h4>Piece C: remaining side slab</h4>${cellGrid(k-1,k-1,"piece-c",`${k-1} by ${k-1} grid`)}<p>${k-1} × ${k-1} × 1 = <strong>${c}</strong> = (k − 1)<sup>2</sup></p></div>
       </div>
       <div class="formula">${a} + ${b} + ${c} = <strong>${a+b+c}</strong> = ${shell}</div>
-      <p>The pieces do not overlap: Piece B excludes the top layer, and Piece C excludes both the top layer and the front slab.</p>`;
+      <p><strong>No overlap:</strong> Piece B excludes the top layer; Piece C excludes both the top layer and the front slab. <strong>No gap:</strong> any shell cube not on the top and not on the front must lie on the remaining side.</p>`;
   }
 
   function renderTelescoping(){
@@ -1107,10 +1646,22 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
       why:"A definition introduces notation; it does not assume a value for the total."
     },
     {
-      title:"Use the neighbouring-cube identity",
+      title:"Design a sum that can collapse",
+      eq:"[G(1) − G(0)] + ··· + [G(n) − G(n − 1)] = G(n) − G(0)",
+      text:"Neighbouring changes cancel in pairs, leaving only the first and final stages.",
+      why:"For every interior j, +G(j) occurs once and −G(j) occurs once."
+    },
+    {
+      title:"Let geometry suggest the object",
+      eq:"line growth: 1; square growth: 2k − 1; cube growth: square-sized shell",
+      text:"Because k² is an area, cube growth is the first familiar growth process built from area-like sheets.",
+      why:"This motivates cubes systematically instead of inserting them as a trick."
+    },
+    {
+      title:"Use the proved neighbouring-cube identity",
       eq:"k<sup>3</sup> − (k − 1)<sup>3</sup> = 3k<sup>2</sup> − 3k + 1",
-      text:"This identity was obtained by multiplying out (k − 1)³. Its right side contains the square term we need.",
-      why:"No square-sum formula was used to obtain this identity."
+      text:"The shell was partitioned into k², k(k − 1), and (k − 1)² unit-cube pieces, then expanded.",
+      why:"The identity was proved without using the square-sum formula."
     },
     {
       title:"Add the identity for k = 1, 2, …, n",
@@ -1257,6 +1808,8 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
 
   $("meaningN").addEventListener("input",renderMeaning);
   $("pairN").addEventListener("input",renderPairing);
+  $("growthK").addEventListener("input",renderGrowth);
+  $("subK").addEventListener("input",renderSubstitution);
   $("shellK").addEventListener("input",renderShell);
   $("telN").addEventListener("input",renderTelescoping);
   $("layersN").addEventListener("input",renderLayers);
@@ -1267,6 +1820,8 @@ footer{padding:30px 20px 55px;text-align:center;color:#566378}
 
   renderMeaning();
   renderPairing();
+  renderGrowth();
+  renderSubstitution();
   renderShell();
   renderTelescoping();
   renderProofStep();
